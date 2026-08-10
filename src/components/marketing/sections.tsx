@@ -79,15 +79,33 @@ export function Hero({ dict }: { dict: Dictionary }) {
 /* --------------------------------- Marquee --------------------------------- */
 
 export function Marquee({ dict }: { dict: Dictionary }) {
-  return (
-    <div className="border-y border-border bg-surface/40">
-      <div className="container-page flex flex-wrap items-center justify-center gap-x-6 gap-y-2 py-4 text-center">
-        {dict.marquee.map((m, i) => (
-          <span key={m} className="inline-flex items-center gap-6 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-            {i > 0 && <span className="text-gold">◆</span>}
-            {m}
+  // One continuous line rather than a wrapping block — the old flex-wrap broke
+  // into ragged rows on phones. The list is rendered twice so the scroll loops
+  // seamlessly. Persian drops the uppercase/letter-spacing, which would break
+  // the script's joined letterforms.
+  const strip = (
+    <ul className="flex shrink-0 items-center gap-x-6 px-3" aria-hidden={undefined}>
+      {dict.marquee.map((m) => (
+        <li
+          key={m}
+          className="flex items-center gap-6 whitespace-nowrap text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground rtl:normal-case rtl:tracking-normal rtl:text-[13px]"
+        >
+          <span aria-hidden className="text-gold">
+            ◆
           </span>
-        ))}
+          {m}
+        </li>
+      ))}
+    </ul>
+  );
+
+  return (
+    <div className="border-y border-border bg-surface/40 py-4">
+      <div className="marquee-viewport">
+        <div className="marquee-track">
+          {strip}
+          <div aria-hidden>{strip}</div>
+        </div>
       </div>
     </div>
   );
@@ -176,7 +194,7 @@ export function Featured({ dict }: { dict: Dictionary }) {
 /* ------------------------------ Wall preview ------------------------------- */
 
 export function WallPreview({ dict }: { dict: Dictionary }) {
-  const p = PAINTINGS[7]; // a calm landscape
+  const p = PAINTINGS[10]; // a vivid, colorful piece (Gauguin — Ia Orana Maria)
   return (
     <section className="container-page py-24 md:py-32">
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
@@ -262,11 +280,16 @@ export function Sizes({ dict }: { dict: Dictionary }) {
                 <Frame size={18} className="text-muted-foreground" />
               </div>
               <p className="mt-1 text-sm text-muted-foreground">{t.dims}</p>
-              <p className="mt-6 flex items-baseline gap-1">
-                <span className="text-xs text-muted-foreground">{dict.sizes.from}</span>
-                <span className="font-serif text-3xl">{t.price}</span>
-              </p>
-              <p className="text-xs text-muted-foreground">{dict.sizes.perPiece}</p>
+              {/* Toman figures run to 8 digits, so the price sits on its own
+                  line and never wraps — otherwise the cards end up different
+                  heights and the row looks ragged. */}
+              <div className="mt-6">
+                <span className="block text-xs text-muted-foreground">{dict.sizes.from}</span>
+                <span className="mt-0.5 block whitespace-nowrap font-serif text-3xl leading-tight rtl:text-2xl">
+                  {t.price}
+                </span>
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">{dict.sizes.perPiece}</p>
             </div>
           ))}
         </div>

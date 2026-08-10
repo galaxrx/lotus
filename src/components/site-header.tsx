@@ -84,17 +84,21 @@ export function SiteHeader() {
           </Link>
         </div>
 
-        {/* Mobile toggle */}
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-label={open ? dict.gallery.close : dict.nav.menu}
-          aria-expanded={open}
-          aria-controls="mobile-menu"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background md:hidden"
-        >
-          {open ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        {/* Mobile: language stays in the top bar, always one tap away */}
+        <div className="flex items-center gap-1 md:hidden">
+          <LanguageSwitcher />
+
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? dict.gallery.close : dict.nav.menu}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            {open ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}
@@ -126,7 +130,7 @@ export function SiteHeader() {
               <div className="my-3 h-px bg-border" />
 
               <div className="flex items-center justify-between px-2 py-1">
-                <LanguageSwitcher />
+                <span className="text-sm text-muted-foreground">{dict.common.theme}</span>
                 <ThemeToggle />
               </div>
 

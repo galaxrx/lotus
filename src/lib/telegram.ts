@@ -36,7 +36,13 @@ export async function sendOrderToTelegram(
 ): Promise<"sent" | "stubbed" | "failed"> {
   const token = serverEnv.telegramBotToken;
   const chatId = serverEnv.telegramChatId;
-  if (!token || !chatId) return "stubbed";
+  if (!token || !chatId) {
+    console.warn(
+      "[telegram] Not configured, skipping dispatch. " +
+        `TELEGRAM_BOT_TOKEN set: ${Boolean(token)}, TELEGRAM_CHAT_ID set: ${Boolean(chatId)}`
+    );
+    return "stubbed";
+  }
 
   const lines = [
     "🖼️ <b>New painting request</b>",
@@ -63,8 +69,15 @@ export async function sendOrderToTelegram(
         disable_web_page_preview: false,
       }),
     });
-    return res.ok ? "sent" : "failed";
-  } catch {
+    if (res.ok) return "sent";
+    // Telegram explains refusals in the body ("chat not found", "bot was
+    // blocked", "unauthorized"). Surface it in the server log — without the
+    // token — so a misconfigured bot is diagnosable from the deployment logs.
+    const detail = await res.text().catch(() => "");
+    console.error(`[telegram] sendMessage failed (${res.status}): ${detail.slice(0, 300)}`);
+    return "failed";
+  } catch (err) {
+    console.error("[telegram] sendMessage threw:", err);
     return "failed";
   }
 }

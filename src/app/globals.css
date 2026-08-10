@@ -139,6 +139,55 @@
     @apply text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground;
   }
 
+  /* Continuous single-line marquee. Direction-agnostic: the track scrolls by
+     half its width, so it loops seamlessly in both LTR and RTL. */
+  .marquee-viewport {
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-scroll 38s linear infinite;
+  }
+
+  @keyframes marquee-scroll {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  [dir="rtl"] .marquee-track {
+    animation-name: marquee-scroll-rtl;
+  }
+
+  @keyframes marquee-scroll-rtl {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(50%, 0, 0);
+    }
+  }
+
+  /* No motion: park the strip and let the reader swipe through it instead. */
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-viewport {
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .marquee-viewport::-webkit-scrollbar {
+      display: none;
+    }
+    .marquee-track {
+      animation: none;
+    }
+  }
+
   /* Subtle paper grain for the artistic, tactile feel. */
   .grain::before {
     content: "";

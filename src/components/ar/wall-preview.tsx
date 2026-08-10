@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Camera, ImageUp, Download, X } from "lucide-react";
+import { Camera, ImageUp, Download, Share2, X } from "lucide-react";
 import { useI18n } from "@/i18n/provider";
 import { Button } from "@/components/ui/button";
 
@@ -34,6 +34,9 @@ export function WallPreview({
   const [ratio, setRatio] = useState(1.25); // painting height / width
   const [scale, setScale] = useState(0.4); // fraction of scene width
   const [pos, setPos] = useState({ x: 0.3, y: 0.25 }); // fractions of scene
+  const [busy, setBusy] = useState(false);
+  const [shotUrl, setShotUrl] = useState<string | null>(null);
+  const [shotBlob, setShotBlob] = useState<Blob | null>(null);
 
   const stopCamera = useCallback(() => {
     streamRef.current?.getTracks().forEach((tk) => tk.stop());
@@ -41,6 +44,13 @@ export function WallPreview({
   }, []);
 
   useEffect(() => stopCamera, [stopCamera]);
+
+  // Release the captured object URL when the preview unmounts.
+  const shotUrlRef = useRef<string | null>(null);
+  shotUrlRef.current = shotUrl;
+  useEffect(() => () => {
+    if (shotUrlRef.current) URL.revokeObjectURL(shotUrlRef.current);
+  }, []);
 
   // Bind the stream once the <video> element is actually mounted. The video only
   // renders in camera mode, so assigning srcObject before setMode would target a
@@ -101,67 +111,105 @@ export function WallPreview({
     dragging.current = false;
   }
 
-  function snapshot() {
+  /** Load an image the canvas is allowed to export (via our same-origin proxy). */
+  function loadArt(): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+      const art = new Image();
+      art.crossOrigin = "anonymous";
+      art.onload = () => resolve(art);
+      art.onerror = reject;
+      // Museum CDNs don't send CORS headers, which would taint the canvas and
+      // make the snapshot un-exportable. Proxy through our own origin instead.
+      art.src = imageUrl.startsWith("http")
+        ? `/api/art-image?src=${encodeURIComponent(imageUrl)}`
+        : imageUrl;
+    });
+  }
+
+  async function snapshot() {
     const scene = sceneRef.current;
-    if (!scene) return;
-    const w = scene.clientWidth;
-    const h = scene.clientHeight;
-    const canvas = document.createElement("canvas");
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    // Background (cover)
-    const drawCover = (img: CanvasImageSource, iw: number, ih: number) => {
-      const scaleCover = Math.max(w / iw, h / ih);
-      const dw = iw * scaleCover;
-      const dh = ih * scaleCover;
-      ctx.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
-    };
-
-    if (mode === "camera" && videoRef.current) {
-      const v = videoRef.current;
-      drawCover(v, v.videoWidth || w, v.videoHeight || h);
-      composite(ctx, w, h);
-    } else if (mode === "photo" && photoUrl) {
-      const bg = new Image();
-      bg.crossOrigin = "anonymous";
-      bg.onload = () => {
-        drawCover(bg, bg.naturalWidth, bg.naturalHeight);
-        composite(ctx, w, h);
-      };
-      bg.src = photoUrl;
-    }
-  }
-
-  function composite(ctx: CanvasRenderingContext2D, w: number, h: number) {
-    const pw = scale * w;
-    const ph = pw * ratio;
-    const px = pos.x * w;
-    const py = pos.y * h;
-    const border = Math.max(4, pw * 0.03);
-    ctx.fillStyle = "#faf7f0";
-    ctx.fillRect(px - border, py - border, pw + border * 2, ph + border * 2);
-    const art = new Image();
-    art.crossOrigin = "anonymous";
-    art.onload = () => {
-      ctx.drawImage(art, px, py, pw, ph);
-      download(ctx.canvas);
-    };
-    art.onerror = () => download(ctx.canvas);
-    art.src = imageUrl;
-  }
-
-  function download(canvas: HTMLCanvasElement) {
+    if (!scene || busy) return;
+    setBusy(true);
     try {
-      const a = document.createElement("a");
-      a.href = canvas.toDataURL("image/png");
-      a.download = "niloosa-wall-preview.png";
-      a.click();
-    } catch {
-      /* cross-origin taint — snapshot unavailable */
+      const w = scene.clientWidth;
+      const h = scene.clientHeight;
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      const drawCover = (img: CanvasImageSource, iw: number, ih: number) => {
+        const cover = Math.max(w / iw, h / ih);
+        ctx.drawImage(img, (w - iw * cover) / 2, (h - ih * cover) / 2, iw * cover, ih * cover);
+      };
+
+      // Background: live camera frame or the uploaded wall photo.
+      if (mode === "camera" && videoRef.current) {
+        const v = videoRef.current;
+        drawCover(v, v.videoWidth || w, v.videoHeight || h);
+      } else if (mode === "photo" && photoUrl) {
+        const bg = await new Promise<HTMLImageElement | null>((resolve) => {
+          const im = new Image();
+          im.onload = () => resolve(im);
+          im.onerror = () => resolve(null);
+          im.src = photoUrl; // object URL — same-origin, safe to export
+        });
+        if (bg) drawCover(bg, bg.naturalWidth, bg.naturalHeight);
+      }
+
+      // The framed painting on top.
+      const pw = scale * w;
+      const ph = pw * ratio;
+      const px = pos.x * w;
+      const py = pos.y * h;
+      const border = Math.max(4, pw * 0.03);
+      ctx.fillStyle = "#faf7f0";
+      ctx.fillRect(px - border, py - border, pw + border * 2, ph + border * 2);
+      const art = await loadArt().catch(() => null);
+      if (art) ctx.drawImage(art, px, py, pw, ph);
+
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob((b) => resolve(b), "image/png")
+      );
+      if (blob) {
+        setShotBlob(blob);
+        setShotUrl((old) => {
+          if (old) URL.revokeObjectURL(old);
+          return URL.createObjectURL(blob);
+        });
+      }
+    } finally {
+      setBusy(false);
     }
+  }
+
+  /** Share sheet — the reliable way to get the image into a phone's photo library. */
+  async function shareShot() {
+    if (!shotBlob) return;
+    const file = new File([shotBlob], "niloosa-wall-preview.png", { type: "image/png" });
+    const nav = navigator as Navigator & { canShare?: (d: { files: File[] }) => boolean };
+    if (nav.share && nav.canShare?.({ files: [file] })) {
+      await nav.share({ files: [file], title: t.title }).catch(() => {});
+    } else {
+      downloadShot();
+    }
+  }
+
+  function downloadShot() {
+    if (!shotUrl) return;
+    const a = document.createElement("a");
+    a.href = shotUrl;
+    a.download = "niloosa-wall-preview.png";
+    a.click();
+  }
+
+  function closeShot() {
+    setShotUrl((old) => {
+      if (old) URL.revokeObjectURL(old);
+      return null;
+    });
+    setShotBlob(null);
   }
 
   return (
@@ -258,10 +306,54 @@ export function WallPreview({
             </label>
             <button
               onClick={snapshot}
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:opacity-90 cursor-pointer"
+              disabled={busy}
+              className="inline-flex min-h-[44px] items-center gap-2 rounded-md bg-primary px-4 text-xs font-medium text-primary-foreground hover:opacity-90 disabled:opacity-60 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
-              <Download size={15} /> {t.snapshot}
+              <Camera size={15} /> {busy ? t.capturing : t.snapshot}
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Captured shot — shown in-app so it can be viewed and saved on a phone */}
+      {shotUrl && (
+        <div className="absolute inset-0 z-10 flex flex-col bg-black/95 backdrop-blur-sm">
+          <div className="flex items-center justify-between gap-4 px-5 py-4 text-white">
+            <p className="text-sm font-medium">{t.captured}</p>
+            <button
+              onClick={closeShot}
+              aria-label={t.close}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              <X size={18} />
+            </button>
+          </div>
+
+          <div className="flex flex-1 items-center justify-center px-5 pb-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={shotUrl}
+              alt={t.captured}
+              className="max-h-full max-w-full rounded-lg object-contain shadow-2xl"
+            />
+          </div>
+
+          <div className="flex flex-col gap-3 px-5 pb-6 pt-3 text-white">
+            <p className="text-center text-xs text-white/70">{t.saveHint}</p>
+            <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
+              <button
+                onClick={shareShot}
+                className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground hover:opacity-90 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:w-auto"
+              >
+                <Share2 size={16} /> {t.share}
+              </button>
+              <button
+                onClick={downloadShot}
+                className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-md border border-white/25 px-5 text-sm hover:bg-white/10 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:w-auto"
+              >
+                <Download size={16} /> {t.download}
+              </button>
+            </div>
           </div>
         </div>
       )}
