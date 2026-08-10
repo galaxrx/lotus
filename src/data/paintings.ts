@@ -1,7 +1,7 @@
 // Curated public-domain paintings from The Met Open Access.
 // images.metmuseum.org URLs are hotlinkable and legal to display/reproduce.
-// In production these are ingested into the catalog with extracted colors; here
-// they're a hand-curated starter set shared by the landing, gallery, and hero.
+// Category + tone are hand-curated so the discover filters are well-populated
+// across every theme and color tone.
 
 export type Category =
   | "landscape"
@@ -42,6 +42,26 @@ export const PAINTINGS: Painting[] = [
   { id: 14, title: "The House with the Cracked Walls", artist: "Paul Cézanne", file: "DT1943", category: "landscape", tone: "earthy" },
   { id: 15, title: "The French Comedians", artist: "Antoine Watteau", file: "DP120381", category: "figures", tone: "muted" },
   { id: 16, title: "Christ Blessing", artist: "Gerard David", file: "DP218061", category: "portrait", tone: "cool" },
+  { id: 17, title: "The Harvesters", artist: "Pieter Bruegel the Elder", file: "DP119115", category: "landscape", tone: "earthy" },
+  { id: 18, title: "The Penitence of Saint Jerome", artist: "Joachim Patinir", file: "DT5549", category: "landscape", tone: "cool" },
+  { id: 19, title: "Portrait of a Man", artist: "Velázquez", file: "DP276131", category: "portrait", tone: "muted" },
+  { id: 20, title: "Young Woman with a Pink", artist: "Hans Memling", file: "DP-45396-001", category: "portrait", tone: "cool" },
+  { id: 21, title: "Madame Jacques-Louis Leblanc", artist: "J. A. D. Ingres", file: "DT1926", category: "portrait", tone: "muted" },
+  { id: 22, title: "Don Andrés de Andrade y la Cal", artist: "Bartolomé Estebán Murillo", file: "DP-16333-001", category: "portrait", tone: "warm" },
+  { id: 23, title: "Marie Emilie Coignet de Courson with a Dog", artist: "Jean-Honoré Fragonard", file: "DP-1019-01", category: "portrait", tone: "warm" },
+  { id: 24, title: "Basket of Flowers", artist: "Eugène Delacroix", file: "DP-14347-001", category: "floral", tone: "vivid" },
+  { id: 25, title: "Still Life with Flowers and Fruit", artist: "Henri Fantin-Latour", file: "DT1980", category: "floral", tone: "muted" },
+  { id: 26, title: "A Bouquet of Flowers", artist: "Clara Peeters", file: "DP-19451-001", category: "floral", tone: "earthy" },
+  { id: 27, title: "Still Life with Flowers and Prickly Pears", artist: "Auguste Renoir", file: "DP257756", category: "floral", tone: "vivid" },
+  { id: 28, title: "Still Life with a Skull and a Writing Quill", artist: "Pieter Claesz", file: "DP145929", category: "still-life", tone: "earthy" },
+  { id: 29, title: "Still Life with Oysters and Glassware", artist: "Willem Claesz Heda", file: "DP120415", category: "still-life", tone: "muted" },
+  { id: 30, title: "Still Life with Apples and a Pitcher", artist: "Camille Pissarro", file: "DP-21958-001", category: "still-life", tone: "earthy" },
+  { id: 31, title: "Still Life with Teapot and Fruit", artist: "Paul Gauguin", file: "DT1027", category: "still-life", tone: "warm" },
+  { id: 32, title: "Still Life", artist: "Georg Flegel", file: "DP-25893-001", category: "still-life", tone: "earthy" },
+  { id: 33, title: "Dog Guarding Dead Game", artist: "Jean-Baptiste Oudry", file: "DP356140", category: "animals", tone: "earthy" },
+  { id: 34, title: "Equestrian Portrait with Tutor and Coachman", artist: "Aelbert Cuyp", file: "DP146442", category: "animals", tone: "warm" },
+  { id: 35, title: "A Maid Asleep", artist: "Johannes Vermeer", file: "DP355525", category: "figures", tone: "warm" },
+  { id: 36, title: "Two Children Teasing a Cat", artist: "Annibale Carracci", file: "DP243404", category: "figures", tone: "muted" },
 ];
 
 export const collectionItems = PAINTINGS.map((p) => ({
