@@ -1,5 +1,6 @@
 import "server-only";
 import { serverEnv } from "@/lib/env";
+import { formatToman } from "@/lib/config";
 
 export interface OrderNotification {
   ref: string;
@@ -8,6 +9,7 @@ export interface OrderNotification {
   size: string;
   frame: string;
   priceUsd: number;
+  priceToman: number;
   customerName: string;
   contact: string;
   address: string;
@@ -42,7 +44,7 @@ export async function sendOrderToTelegram(
     "",
     `<b>${escapeHtml(order.paintingTitle)}</b> — ${escapeHtml(order.artist)}`,
     `Size: ${escapeHtml(order.size)} · Frame: ${escapeHtml(order.frame)}`,
-    `Indicative price: $${order.priceUsd}`,
+    `Indicative price: $${order.priceUsd} · ${escapeHtml(formatToman(order.priceToman))}`,
     "",
     `<b>Customer:</b> ${escapeHtml(order.customerName)}`,
     `<b>Contact:</b> ${escapeHtml(order.contact)}`,

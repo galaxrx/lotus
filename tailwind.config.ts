@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Lotus design tokens.
+ * Niloosa design tokens.
  * Botanical editorial-luxury palette. All colors are exposed as CSS variables
  * (see globals.css) so light/dark themes swap without changing component code.
  */

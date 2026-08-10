@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useI18n } from "@/i18n/provider";
-import { PAINTINGS, metImage } from "@/data/paintings";
+import { PAINTINGS, imageOf } from "@/data/paintings";
 import { CATEGORIES, TONES, filterPaintings, suggestedSizeForBudget } from "@/lib/catalog";
 import { BUDGET_MAX } from "@/lib/config";
 import type { Category, Tone } from "@/data/paintings";
@@ -105,7 +105,7 @@ export function DiscoverClient() {
               className="group overflow-hidden rounded-xl border border-border bg-surface shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift"
             >
               <img
-                src={metImage(p.file)}
+                src={imageOf(p)}
                 alt={`${p.title} by ${p.artist}`}
                 loading="lazy"
                 className="aspect-[4/5] w-full object-cover"

@@ -20,7 +20,7 @@ export function ThemeToggle({ className }: { className?: string }) {
     setDark(next);
     document.documentElement.classList.toggle("dark", next);
     try {
-      localStorage.setItem("lotus-theme", next ? "dark" : "light");
+      localStorage.setItem("niloosa-theme", next ? "dark" : "light");
     } catch {}
   }
 

@@ -1,4 +1,4 @@
-# Lotus
+# Niloosa
 
 **Hand-painted masterpieces for your wall.** Choose a real public-domain painting,
 preview it on your wall in AR, and a painter reproduces it on canvas — real

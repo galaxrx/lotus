@@ -12,10 +12,10 @@ import {
   Frame,
 } from "lucide-react";
 import type { Dictionary } from "@/i18n/dictionaries";
-import { LotusMark } from "@/components/brand/logo";
+import { NiloosaMark } from "@/components/brand/logo";
 import { ArtCollage } from "@/components/ui/hero-04-utils/art-collage";
 import { buttonClasses } from "@/components/ui/button";
-import { PAINTINGS, metImage } from "@/data/paintings";
+import { PAINTINGS, imageOf } from "@/data/paintings";
 import { cn } from "@/lib/utils";
 
 /* ----------------------------------- Hero ---------------------------------- */
@@ -37,7 +37,7 @@ export function Hero({ dict }: { dict: Dictionary }) {
       <div className="container-page relative grid items-center gap-12 py-20 lg:grid-cols-2 lg:gap-16 lg:py-28">
         <div className="flex flex-col items-start">
           <p className="eyebrow inline-flex items-center gap-2">
-            <LotusMark tone="brand" className="h-4 w-4" />
+            <NiloosaMark tone="brand" className="h-4 w-4" />
             {dict.hero.eyebrow}
           </p>
 
@@ -65,8 +65,8 @@ export function Hero({ dict }: { dict: Dictionary }) {
 
         <div className="relative">
           <ArtCollage
-            primaryImage={metImage(PAINTINGS[0].file)}
-            secondaryImage={metImage(PAINTINGS[1].file)}
+            primaryImage={imageOf(PAINTINGS[0])}
+            secondaryImage={imageOf(PAINTINGS[1])}
             primaryAlt={`${PAINTINGS[0].title} by ${PAINTINGS[0].artist}`}
             secondaryAlt={`${PAINTINGS[1].title} by ${PAINTINGS[1].artist}`}
           />
@@ -148,7 +148,7 @@ export function Featured({ dict }: { dict: Dictionary }) {
               className="group relative overflow-hidden rounded-xl border border-border bg-surface shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift"
             >
               <img
-                src={metImage(p.file)}
+                src={imageOf(p)}
                 alt={`${p.title} by ${p.artist}`}
                 loading="lazy"
                 className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
@@ -209,7 +209,7 @@ export function WallPreview({ dict }: { dict: Dictionary }) {
             <div className="relative w-3/5 rotate-[-1deg]">
               <div className="overflow-hidden rounded-sm border-[6px] border-background shadow-2xl ring-1 ring-black/10">
                 <img
-                  src={metImage(p.file)}
+                  src={imageOf(p)}
                   alt={`${p.title} by ${p.artist}`}
                   loading="lazy"
                   className="aspect-[4/5] w-full object-cover"
@@ -349,7 +349,7 @@ export function FinalCTA({ dict }: { dict: Dictionary }) {
           className="pointer-events-none absolute inset-0 opacity-30"
           style={{ background: "radial-gradient(circle at 50% 0%, hsl(var(--gold) / 0.5), transparent 60%)" }}
         />
-        <LotusMark className="relative mx-auto mb-6 h-12 w-12 text-primary-foreground" />
+        <NiloosaMark className="relative mx-auto mb-6 h-12 w-12 text-primary-foreground" />
         <h2 className="relative mx-auto max-w-2xl text-4xl md:text-5xl">{dict.cta.title}</h2>
         <p className="relative mx-auto mt-4 max-w-xl text-primary-foreground/80">{dict.cta.subtitle}</p>
         <Link

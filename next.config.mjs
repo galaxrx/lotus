@@ -3,11 +3,12 @@ const isDev = process.env.NODE_ENV !== "production";
 
 // Content Security Policy. 'unsafe-inline' is required for the pre-paint theme
 // script and inline styles; 'unsafe-eval' is only added in development for HMR.
-// Images allow The Met (catalog), data: (snapshots) and blob: (uploaded wall
-// photos). Camera access for the AR preview is granted via Permissions-Policy.
+// Images allow The Met (catalog) and Wikimedia Commons (public-domain abstract
+// works), plus data: (snapshots) and blob: (uploaded wall photos). Camera access
+// for the AR preview is granted via Permissions-Policy.
 const csp = [
   "default-src 'self'",
-  "img-src 'self' data: blob: https://images.metmuseum.org",
+  "img-src 'self' data: blob: https://images.metmuseum.org https://upload.wikimedia.org",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
@@ -25,6 +26,7 @@ const nextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "images.metmuseum.org" },
+      { protocol: "https", hostname: "upload.wikimedia.org" },
       { protocol: "https", hostname: "*.supabase.co" },
     ],
   },

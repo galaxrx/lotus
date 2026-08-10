@@ -13,7 +13,7 @@ export interface ArtCollageProps {
 /**
  * Two-image editorial collage: a large primary canvas with a smaller secondary
  * piece overlapping its lower corner. Gold hairline frames + soft shadows keep
- * it on-brand with the Lotus design system.
+ * it on-brand with the Niloosa design system.
  */
 export function ArtCollage({
   primaryImage,

@@ -6,7 +6,7 @@
 @tailwind utilities;
 
 /*
-  Lotus — botanical editorial-luxury design tokens.
+  Niloosa — botanical editorial-luxury design tokens.
   Colors are HSL channel triplets so Tailwind's <alpha-value> works.
 */
 @layer base {

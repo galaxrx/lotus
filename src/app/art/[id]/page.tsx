@@ -3,7 +3,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ArtDetail } from "@/components/art/art-detail";
 import { getPainting } from "@/lib/catalog";
-import { metImage } from "@/data/paintings";
+import { imageOf } from "@/data/paintings";
 
 export default async function ArtPage({
   params,
@@ -26,8 +26,9 @@ export default async function ArtPage({
             id: painting.id,
             title: painting.title,
             artist: painting.artist,
-            imageUrl: metImage(painting.file),
+            imageUrl: imageOf(painting),
             category: painting.category,
+            complexity: painting.complexity,
           }}
           initialSize={size}
         />

@@ -24,11 +24,12 @@ export function SiteFooter() {
           <FooterCol title={dict.footer.product}>
             <FooterLink href="/#how">{dict.footer.links.how}</FooterLink>
             <FooterLink href="/gallery">{dict.footer.links.gallery}</FooterLink>
+            <FooterLink href="/styles">{dict.footer.links.styles}</FooterLink>
             <FooterLink href="/#sizes">{dict.footer.links.sizes}</FooterLink>
           </FooterCol>
 
           <FooterCol title={dict.footer.company}>
-            <FooterLink href="/#how">{dict.footer.links.about}</FooterLink>
+            <FooterLink href="/artist">{dict.footer.links.about}</FooterLink>
             <FooterLink href="/contact">{dict.footer.links.contact}</FooterLink>
           </FooterCol>
 
@@ -41,7 +42,7 @@ export function SiteFooter() {
         <div className="hairline my-10" />
 
         <div className="flex flex-col items-center justify-between gap-3 text-xs text-muted-foreground sm:flex-row">
-          <p>© {year} Lotus. {dict.footer.rights}</p>
+          <p>© {year} Niloosa. {dict.footer.rights}</p>
           <p className="max-w-sm text-center sm:text-end">{dict.footer.sources}</p>
         </div>
       </div>

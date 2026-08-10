@@ -1,4 +1,4 @@
-// Lotus data model — hand-painted wall-art commissioning.
+// Niloosa data model — hand-painted wall-art commissioning.
 // Guest checkout: an Order needs no user account. Prisma connects directly to
 // Postgres; because there is no multi-tenant/user data here, all access is
 // server-side only (API routes), never exposed to the browser.

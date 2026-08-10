@@ -3,7 +3,7 @@ import { Check } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { buttonClasses } from "@/components/ui/button";
-import { LotusMark } from "@/components/brand/logo";
+import { NiloosaMark } from "@/components/brand/logo";
 import { getI18n } from "@/i18n/server";
 import { cn } from "@/lib/utils";
 
@@ -44,8 +44,8 @@ export default async function OrderConfirmationPage({
           </div>
 
           <div className="mt-10 flex items-center justify-center gap-2 text-muted-foreground">
-            <LotusMark tone="brand" className="h-5 w-5" />
-            <span className="font-serif italic">Lotus</span>
+            <NiloosaMark tone="brand" className="h-5 w-5" />
+            <span className="font-serif italic">Niloosa</span>
           </div>
         </div>
       </main>

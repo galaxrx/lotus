@@ -14,18 +14,18 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(siteUrl),
     title: {
       default: dict.meta.title,
-      template: "%s · Lotus",
+      template: "%s · Niloosa",
     },
     description: dict.meta.description,
-    applicationName: "Lotus",
+    applicationName: "Niloosa",
     icons: { icon: "/logo.svg", apple: "/logo.svg" },
     robots: { index: true, follow: true },
     openGraph: {
       title: dict.meta.title,
       description: dict.meta.description,
       type: "website",
-      siteName: "Lotus",
-      images: [{ url: ogImage, width: 1200, height: 900, alt: "Lotus" }],
+      siteName: "Niloosa",
+      images: [{ url: ogImage, width: 1200, height: 900, alt: "Niloosa" }],
     },
     twitter: {
       card: "summary_large_image",
@@ -46,7 +46,7 @@ export const viewport: Viewport = {
 // Set the theme class before paint to avoid a flash of the wrong theme.
 const themeScript = `
 try {
-  var t = localStorage.getItem('lotus-theme');
+  var t = localStorage.getItem('niloosa-theme');
   var m = window.matchMedia('(prefers-color-scheme: dark)').matches;
   if (t === 'dark' || (!t && m)) document.documentElement.classList.add('dark');
 } catch (e) {}

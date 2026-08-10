@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LotusMark } from "@/components/brand/logo";
+import { NiloosaMark } from "@/components/brand/logo";
 import { buttonClasses } from "@/components/ui/button";
 import { getI18n } from "@/i18n/server";
 
@@ -8,7 +8,7 @@ export default async function NotFound() {
   return (
     <main className="grid min-h-dvh place-items-center px-6 text-center">
       <div className="max-w-md">
-        <LotusMark tone="brand" className="mx-auto h-14 w-14" />
+        <NiloosaMark tone="brand" className="mx-auto h-14 w-14" />
         <p className="mt-6 font-serif text-6xl">404</p>
         <p className="mt-3 text-muted-foreground">
           {dict.discover.none}

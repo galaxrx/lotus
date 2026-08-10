@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { X, Loader2, Send } from "lucide-react";
 import { useI18n } from "@/i18n/provider";
 import { Button } from "@/components/ui/button";
+import { formatPrice } from "@/lib/config";
 import type { ArtDetailData } from "@/components/art/art-detail";
 
 export function OrderForm({
@@ -13,7 +14,8 @@ export function OrderForm({
   frameId,
   sizeLabel,
   frameLabel,
-  price,
+  complexityId,
+  complexityLabel,
   onClose,
 }: {
   painting: ArtDetailData;
@@ -21,10 +23,11 @@ export function OrderForm({
   frameId: string;
   sizeLabel: string;
   frameLabel: string;
-  price: number;
+  complexityId: string;
+  complexityLabel: string;
   onClose: () => void;
 }) {
-  const { dict } = useI18n();
+  const { dict, locale } = useI18n();
   const o = dict.order;
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -86,10 +89,10 @@ export function OrderForm({
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">{painting.title}</p>
             <p className="truncate text-xs text-muted-foreground">
-              {sizeLabel} · {frameLabel}
+              {sizeLabel} · {frameLabel} · {complexityLabel}
             </p>
           </div>
-          <span className="font-serif text-xl">${price}</span>
+          <span className="font-serif text-xl">{formatPrice(locale, sizeId, frameId, complexityId)}</span>
         </div>
 
         <form onSubmit={onSubmit} className="mt-6 space-y-4">

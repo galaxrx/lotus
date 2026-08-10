@@ -1,8 +1,8 @@
-# CLAUDE.md — Lotus engineering notes
+# CLAUDE.md — Niloosa engineering notes
 
 Guidance for engineers/agents working in this repo.
 
-## What Lotus is
+## What Niloosa is
 
 A hand-painted wall-art commissioning app. A visitor browses public-domain
 paintings, previews one on their wall (camera AR), and submits a **guest** order
@@ -33,8 +33,8 @@ paintings, previews one on their wall (camera AR), and submits a **guest** order
 ## Security
 
 - Security headers + a **Content-Security-Policy** are in `next.config.mjs` (self + The Met
-  images + Google Fonts; `camera=(self)` for AR). Keep the CSP in sync when adding external
-  hosts.
+  images + Wikimedia Commons images (public-domain abstract works) + Google Fonts;
+  `camera=(self)` for AR). Keep the CSP in sync when adding external hosts.
 - No user accounts, no service-role keys, no user-tenant data — the app is deliberately
   minimal. Order data (name/contact/address) is shared only with the painter via Telegram.
 

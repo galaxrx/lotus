@@ -42,19 +42,34 @@ export function WallPreview({
 
   useEffect(() => stopCamera, [stopCamera]);
 
+  // Bind the stream once the <video> element is actually mounted. The video only
+  // renders in camera mode, so assigning srcObject before setMode would target a
+  // null ref and the camera would never appear.
+  useEffect(() => {
+    if (mode !== "camera") return;
+    const v = videoRef.current;
+    if (v && streamRef.current && v.srcObject !== streamRef.current) {
+      v.srcObject = streamRef.current;
+      v.play().catch(() => {});
+    }
+  }, [mode]);
+
   async function startCamera() {
+    // getUserMedia only exists in a secure context (HTTPS or localhost). Over
+    // plain HTTP on a phone, navigator.mediaDevices is undefined — fall back to
+    // the photo-upload flow instead of throwing.
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setUnsupported(true);
+      return;
+    }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: { ideal: "environment" } },
         audio: false,
       });
       streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play().catch(() => {});
-      }
-      setMode("camera");
       setUnsupported(false);
+      setMode("camera");
     } catch {
       setUnsupported(true);
     }
@@ -142,7 +157,7 @@ export function WallPreview({
     try {
       const a = document.createElement("a");
       a.href = canvas.toDataURL("image/png");
-      a.download = "lotus-wall-preview.png";
+      a.download = "niloosa-wall-preview.png";
       a.click();
     } catch {
       /* cross-origin taint — snapshot unavailable */

@@ -4,9 +4,9 @@ import { z } from "zod";
 import { isSameOrigin } from "@/lib/http";
 import { rateLimit, clientIpFrom } from "@/lib/rate-limit";
 import { getPainting } from "@/lib/catalog";
-import { computePrice, sizeById, frameById } from "@/lib/config";
+import { computePrice, computePriceToman, sizeById, frameById } from "@/lib/config";
 import { sendOrderToTelegram } from "@/lib/telegram";
-import { metImage } from "@/data/paintings";
+import { imageOf } from "@/data/paintings";
 import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
@@ -23,7 +23,7 @@ const bodySchema = z.object({
 });
 
 function makeRef(): string {
-  return `LOT-${crypto.randomBytes(3).toString("hex").toUpperCase()}`;
+  return `NIL-${crypto.randomBytes(3).toString("hex").toUpperCase()}`;
 }
 
 export async function POST(req: Request) {
@@ -47,9 +47,14 @@ export async function POST(req: Request) {
   const { paintingId, sizeId, frameId, name, contact, address, note } = parsed.data;
 
   // The catalog + pricing are the source of truth — never trust a client price.
+  // Complexity comes from the catalog (server-side), not the request.
   const painting = getPainting(paintingId);
-  const price = computePrice(sizeId, frameId);
-  if (!painting || price === null) {
+  if (!painting) {
+    return NextResponse.json({ error: "Unknown painting or options" }, { status: 400 });
+  }
+  const price = computePrice(sizeId, frameId, painting.complexity);
+  const priceToman = computePriceToman(sizeId, frameId, painting.complexity);
+  if (price === null || priceToman === null) {
     return NextResponse.json({ error: "Unknown painting or options" }, { status: 400 });
   }
 
@@ -85,11 +90,12 @@ export async function POST(req: Request) {
     size: sizeById(sizeId)!.id,
     frame: frameById(frameId)!.id,
     priceUsd: price,
+    priceToman,
     customerName: name,
     contact,
     address,
     note,
-    imageUrl: metImage(painting.file),
+    imageUrl: imageOf(painting),
   });
 
   return NextResponse.json({ ref, priceUsd: price, persisted, delivery });

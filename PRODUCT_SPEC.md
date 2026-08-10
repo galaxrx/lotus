@@ -1,4 +1,4 @@
-# Lotus — Product Spec (v1)
+# Niloosa — Product Spec (v1)
 
 _Commission a real, hand-painted canvas for your wall._
 
@@ -8,7 +8,7 @@ Status: **DRAFT for approval.** No app code will change until this is approved.
 
 ## 1. Concept
 
-Lotus helps someone find a real painting they love, **see it on their own wall in AR**,
+Niloosa helps someone find a real painting they love, **see it on their own wall in AR**,
 and order a **hand-painted canvas reproduction** (real texture + painter's signature).
 Artworks are **real, curated paintings from public-domain collections** — not AI-generated —
 filtered by an engine, so they are authentic *and* legal to reproduce and sell.
@@ -76,7 +76,7 @@ filtered by an engine, so they are authentic *and* legal to reproduce and sell.
 
 ## 8. What carries over / what changes
 
-**Reuse:** Lotus logo, botanical design system, EN + Persian/RTL, Supabase auth, Prisma,
+**Reuse:** Niloosa logo, botanical design system, EN + Persian/RTL, Supabase auth, Prisma,
 and the security layer — including the **SSRF-guarded fetcher** (now genuinely used to pull
 museum images/APIs server-side) and per-user authorization (a buyer only sees their own orders).
 

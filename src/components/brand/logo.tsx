@@ -1,14 +1,14 @@
 import { cn } from "@/lib/utils";
 
 /**
- * The Lotus mark — a fanned five-petal lotus.
+ * The Niloosa mark — a fanned five-petal lotus.
  * Monoline + currentColor by default so it adapts to any surface/theme.
  * Pass `tone="brand"` to render the emerald/rose/gold brand gradient.
  */
-export function LotusMark({
+export function NiloosaMark({
   className,
   tone = "current",
-  title = "Lotus",
+  title = "Niloosa",
 }: {
   className?: string;
   tone?: "current" | "brand";
@@ -71,8 +71,8 @@ export function Logo({
 }) {
   return (
     <span className={cn("inline-flex items-center gap-2.5", className)}>
-      <LotusMark tone={tone} className={cn("h-7 w-7 text-primary", markClassName)} />
-      <span className="font-serif text-xl font-semibold tracking-tight">Lotus</span>
+      <NiloosaMark tone={tone} className={cn("h-7 w-7 text-primary", markClassName)} />
+      <span className="font-serif text-xl font-semibold tracking-tight">Niloosa</span>
     </span>
   );
 }

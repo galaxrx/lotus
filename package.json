@@ -1,8 +1,8 @@
 {
-  "name": "lotus",
+  "name": "niloosa",
   "version": "0.1.0",
   "private": true,
-  "description": "Lotus — the AI content & brand studio for teams.",
+  "description": "Niloosa — commission a hand-painted canvas of a public-domain masterpiece, previewed on your wall.",
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",

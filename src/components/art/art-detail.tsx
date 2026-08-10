@@ -7,7 +7,8 @@ import { useI18n } from "@/i18n/provider";
 import { Button } from "@/components/ui/button";
 import { WallPreview } from "@/components/ar/wall-preview";
 import { OrderForm } from "@/components/art/order-form";
-import { SIZE_TIERS, FRAMES, computePrice } from "@/lib/config";
+import { SIZE_TIERS, FRAMES, formatPrice } from "@/lib/config";
+import type { Complexity } from "@/data/paintings";
 import { cn } from "@/lib/utils";
 
 export interface ArtDetailData {
@@ -16,6 +17,7 @@ export interface ArtDetailData {
   artist: string;
   imageUrl: string;
   category: string;
+  complexity: Complexity;
 }
 
 export function ArtDetail({
@@ -25,7 +27,7 @@ export function ArtDetail({
   painting: ArtDetailData;
   initialSize?: string;
 }) {
-  const { dict } = useI18n();
+  const { dict, locale } = useI18n();
   const t = dict.detail;
 
   const [sizeIdx, setSizeIdx] = useState(() => {
@@ -38,7 +40,6 @@ export function ArtDetail({
 
   const size = SIZE_TIERS[sizeIdx];
   const frame = FRAMES[frameIdx];
-  const price = computePrice(size.id, frame.id) ?? 0;
 
   return (
     <div className="container-page py-10 md:py-14">
@@ -80,7 +81,7 @@ export function ArtDetail({
                   onClick={() => setSizeIdx(i)}
                   aria-pressed={i === sizeIdx}
                   className={cn(
-                    "rounded-xl border p-3 text-start transition-colors cursor-pointer",
+                    "rounded-xl border p-3 text-start transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                     i === sizeIdx ? "border-primary bg-primary/5" : "border-border hover:border-gold/50"
                   )}
                 >
@@ -101,7 +102,7 @@ export function ArtDetail({
                   onClick={() => setFrameIdx(i)}
                   aria-pressed={i === frameIdx}
                   className={cn(
-                    "rounded-full border px-4 py-1.5 text-sm transition-colors cursor-pointer",
+                    "inline-flex min-h-[44px] items-center rounded-full border px-4 text-sm transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                     i === frameIdx
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-border text-muted-foreground hover:border-gold/50 hover:text-foreground"
@@ -113,18 +114,30 @@ export function ArtDetail({
             </div>
           </div>
 
+          {/* Complexity (intrinsic to the artwork) */}
+          <div className="mt-6 flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              {t.complexity}
+            </span>
+            <span className="rounded-full border border-border px-3 py-1 text-sm text-muted-foreground">
+              {t.complexities[painting.complexity]}
+            </span>
+          </div>
+
           {/* Total */}
-          <div className="mt-8 flex items-baseline justify-between border-t border-border pt-6">
+          <div className="mt-6 flex items-baseline justify-between border-t border-border pt-6">
             <span className="text-sm text-muted-foreground">{t.total}</span>
-            <span className="font-serif text-3xl">${price}</span>
+            <span className="font-serif text-3xl">
+              {formatPrice(locale, size.id, frame.id, painting.complexity)}
+            </span>
           </div>
 
           {/* Actions */}
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <Button variant="secondary" size="lg" className="flex-1" onClick={() => setShowAR(true)}>
+            <Button variant="secondary" size="lg" className="w-full sm:flex-1" onClick={() => setShowAR(true)}>
               <Camera size={18} /> {t.preview}
             </Button>
-            <Button size="lg" className="flex-1" onClick={() => setShowOrder(true)}>
+            <Button size="lg" className="w-full sm:flex-1" onClick={() => setShowOrder(true)}>
               <Send size={18} /> {t.request}
             </Button>
           </div>
@@ -142,7 +155,8 @@ export function ArtDetail({
           frameId={frame.id}
           sizeLabel={dict.sizes.tiers[sizeIdx].name}
           frameLabel={dict.sizes.frames[frameIdx]}
-          price={price}
+          complexityId={painting.complexity}
+          complexityLabel={t.complexities[painting.complexity]}
           onClose={() => setShowOrder(false)}
         />
       )}
