@@ -1,0 +1,603 @@
+import type { Locale } from "./config";
+
+/**
+ * UI copy for Lotus — the hand-painted wall-art commissioning app — in English
+ * and Persian. `en` defines the canonical shape; `fa` must match it.
+ */
+const en = {
+  meta: {
+    title: "Lotus — Hand-painted masterpieces for your wall",
+    description:
+      "Choose a real painting you love, preview it on your wall in AR, and have a painter hand-paint it on canvas — real texture, real signature.",
+  },
+  nav: {
+    how: "How it works",
+    gallery: "Gallery",
+    sizes: "Sizes & pricing",
+    browse: "Find your painting",
+    signIn: "Sign in",
+  },
+  hero: {
+    eyebrow: "Hand-painted · Public-domain masterworks",
+    titleLead: "A real painting for your wall,",
+    titleAccent: "made by hand.",
+    subtitle:
+      "Pick a masterpiece by color, style, and budget. See it on your wall in AR. A painter reproduces it on canvas — real brushwork, real texture, signed by hand.",
+    ctaPrimary: "Find your painting",
+    ctaSecondary: "See how it works",
+    note: "No AI-generated art · Museum public-domain sources · Preview before you commit",
+  },
+  marquee: [
+    "Public-domain masterworks",
+    "Hand-painted on canvas",
+    "Real texture & signature",
+    "Preview on your wall in AR",
+    "Delivered to your door",
+  ],
+  how: {
+    eyebrow: "How it works",
+    title: "From a painting you love to a canvas on your wall.",
+    steps: [
+      {
+        title: "Choose your taste",
+        body: "Tell us a theme, a color tone, and a budget. Lotus surfaces real paintings that fit — no endless scrolling.",
+      },
+      {
+        title: "See it on your wall",
+        body: "Point your phone at the wall and preview the framed canvas at real size before you decide.",
+      },
+      {
+        title: "Send the request",
+        body: "Pick a size and frame and confirm. Your request goes straight to the painter on Telegram.",
+      },
+      {
+        title: "Painted & delivered",
+        body: "The painter reproduces it on canvas with real texture, signs it, and ships it to your door.",
+      },
+    ],
+  },
+  featured: {
+    eyebrow: "The collection",
+    title: "Masterpieces, ready for your walls.",
+    subtitle:
+      "A curated selection from the world's great museums — all public domain, all reproducible.",
+    cta: "Enter the gallery",
+    viewAll: "Browse all paintings",
+  },
+  wall: {
+    eyebrow: "Preview in AR",
+    title: "See it on your wall before you commit.",
+    body: "Guesswork is the enemy of good art on a wall. Open your camera, place the framed painting at true scale, and move it around until it's right.",
+    points: [
+      "True-to-size framed preview",
+      "Works in your browser — no app to install",
+      "Snapshot it to compare rooms",
+    ],
+    note: "Point · place · picture it.",
+  },
+  sizes: {
+    eyebrow: "Sizes & pricing",
+    title: "Simple sizes. Honest pricing.",
+    subtitle:
+      "The artwork is public domain — you pay for the painter's hand and the canvas. Pick a size and frame; tune the rest with the painter.",
+    from: "from",
+    perPiece: "/ piece",
+    frameLabel: "Frames",
+    frames: ["Rolled canvas", "Natural wood", "Black", "White"],
+    tiers: [
+      { name: "Small", dims: "30 × 40 cm", price: "$120" },
+      { name: "Medium", dims: "50 × 70 cm", price: "$220" },
+      { name: "Large", dims: "70 × 100 cm", price: "$360" },
+      { name: "Grand", dims: "90 × 120 cm", price: "$540" },
+    ],
+    disclaimer: "Indicative prices. Final quote is confirmed with the painter before any payment.",
+  },
+  values: {
+    eyebrow: "Why Lotus",
+    title: "Real art, made the real way.",
+    items: [
+      {
+        title: "Not AI — real paintings",
+        body: "Every piece is a genuine artwork from a museum's public-domain collection, reproduced by a human hand.",
+      },
+      {
+        title: "Real texture & signature",
+        body: "Oil on canvas with visible brushwork and the painter's signature — a piece, not a print.",
+      },
+      {
+        title: "Preview before you pay",
+        body: "See it on your wall and confirm the size and frame first. No surprises when it arrives.",
+      },
+      {
+        title: "Legally yours",
+        body: "We only use public-domain masterworks, so your reproduction is fully above board.",
+      },
+    ],
+  },
+  faq: {
+    eyebrow: "Questions",
+    title: "Good to know.",
+    items: [
+      {
+        q: "Are these prints or real paintings?",
+        a: "Real paintings. A painter reproduces your chosen artwork by hand on canvas, with genuine texture and a signature.",
+      },
+      {
+        q: "Where do the paintings come from?",
+        a: "Public-domain collections from major museums (like The Met). That's what makes hand reproduction legal and worry-free.",
+      },
+      {
+        q: "How do I order?",
+        a: "Pick a painting, size, and frame, then send the request. It reaches the painter on Telegram, who confirms details and price with you directly.",
+      },
+      {
+        q: "How does the wall preview work?",
+        a: "Your phone camera places the framed canvas on your wall at real size — right in the browser, nothing to install.",
+      },
+      {
+        q: "How long does it take?",
+        a: "Hand-painting takes time. The painter gives you a timeline when confirming your order — typically a few weeks.",
+      },
+    ],
+  },
+  cta: {
+    title: "Find the painting your wall is missing.",
+    subtitle: "Browse the masterworks, preview one at home, and let a painter bring it to life.",
+    button: "Find your painting",
+    note: "It only takes a minute to start.",
+  },
+  footer: {
+    tagline: "Hand-painted masterpieces for your wall.",
+    product: "Explore",
+    company: "Lotus",
+    legal: "Legal",
+    links: {
+      how: "How it works",
+      gallery: "Gallery",
+      sizes: "Sizes & pricing",
+      about: "About",
+      contact: "Contact",
+      privacy: "Privacy",
+      terms: "Terms",
+    },
+    rights: "All rights reserved.",
+    sources: "Artworks courtesy of open-access museum collections (public domain).",
+  },
+  auth: {
+    signInTitle: "Welcome back",
+    signInSubtitle: "Sign in to track your commissions.",
+    signUpTitle: "Create an account",
+    signUpSubtitle: "Save favorites and track your orders.",
+    email: "Email",
+    password: "Password",
+    name: "Full name",
+    signIn: "Sign in",
+    signUp: "Create account",
+    haveAccount: "Already have an account?",
+    noAccount: "New to Lotus?",
+    demoNote: "This is a local demo build. Connect Supabase to enable real sign-in.",
+  },
+  dashboard: {
+    title: "Your studio",
+    welcome: "Your commissions",
+    subtitle: "This is a local scaffold. Connect Supabase and Prisma to see live data.",
+    credits: "Saved paintings",
+    workspace: "Orders",
+    generate: "Find a painting",
+    library: "Order history",
+    settings: "Settings",
+    signOut: "Sign out",
+    empty: "No orders yet. Your commissions will appear here.",
+  },
+  discover: {
+    title: "Find your painting",
+    subtitle: "Pick a mood, a palette, and a budget — we'll surface masterpieces that fit.",
+    theme: "Theme",
+    color: "Color tone",
+    budget: "Budget",
+    any: "Any",
+    results: "paintings",
+    none: "No paintings match yet — try loosening a filter.",
+    clear: "Clear filters",
+    categories: {
+      landscape: "Landscape",
+      portrait: "Portrait",
+      floral: "Floral",
+      "still-life": "Still life",
+      figures: "Figures",
+      animals: "Animals",
+    },
+    tones: {
+      warm: "Warm",
+      cool: "Cool",
+      earthy: "Earthy",
+      vivid: "Vivid",
+      muted: "Muted",
+    },
+    budgets: ["Under $200", "$200 – 400", "$400+"],
+  },
+  detail: {
+    by: "by",
+    size: "Size",
+    frame: "Frame",
+    total: "Total",
+    preview: "Preview on my wall",
+    request: "Request this painting",
+    note: "Public-domain artwork · hand-painted to order",
+    back: "Back to gallery",
+  },
+  order: {
+    title: "Request your painting",
+    subtitle: "Send the details to the painter. They confirm timeline and final price with you.",
+    summary: "Your commission",
+    name: "Your name",
+    contact: "Email or phone",
+    contactHint: "So the painter can reach you.",
+    address: "Delivery address",
+    note: "Note to the painter (optional)",
+    submit: "Send request",
+    submitting: "Sending…",
+    cancel: "Cancel",
+    successTitle: "Request sent",
+    successBody: "Your commission request has reached the painter. They'll be in touch to confirm details, timeline, and payment.",
+    ref: "Reference",
+    backHome: "Back to home",
+    browse: "Browse more paintings",
+    error: "Something went wrong. Please try again.",
+    demoNote: "Demo mode: the request isn't persisted and Telegram delivery is stubbed until configured.",
+  },
+  ar: {
+    title: "See it on your wall",
+    start: "Start camera",
+    upload: "Use a wall photo",
+    snapshot: "Save snapshot",
+    close: "Close",
+    hint: "Drag to move · use the slider to resize.",
+    size: "Size on wall",
+    unsupported: "Camera unavailable — upload a photo of your wall instead.",
+  },
+  legal: {
+    updated: "Last updated: August 2026",
+    back: "Back to home",
+    privacy: {
+      title: "Privacy Policy",
+      intro: "This policy explains what Lotus collects when you request a commission and how it is used.",
+      sections: [
+        { h: "What we collect", b: "When you request a painting we collect the details you provide: your name, contact (email or phone), delivery address, and any note. No account is required and we do not collect payment details on this site." },
+        { h: "How we use it", b: "We use your details solely to fulfil your commission — the request is sent to the painter, who contacts you to confirm the artwork, timeline, and price. We do not sell your data." },
+        { h: "Sharing", b: "Your request is shared with the painter responsible for your order (delivered via Telegram) and, where enabled, our hosting and database providers strictly to operate the service." },
+        { h: "Artworks", b: "Paintings shown are sourced from public-domain museum collections and reproduced lawfully." },
+        { h: "Your choices", b: "You can ask us to access or delete your request data at any time using the contact details on our contact page." },
+      ],
+    },
+    terms: {
+      title: "Terms of Service",
+      intro: "By using Lotus and requesting a commission, you agree to these terms.",
+      sections: [
+        { h: "The service", b: "Lotus lets you request a hand-painted canvas reproduction of a public-domain artwork. Submitting a request is not a binding order — the painter confirms scope, timeline, and final price with you before any work or payment." },
+        { h: "Pricing & payment", b: "Prices shown are indicative. Final pricing and payment are arranged directly with the painter. No payment is collected on this website." },
+        { h: "Reproductions", b: "All artworks offered are in the public domain. Each piece is an original hand-painted reproduction carrying the painter's signature — not an exact forgery." },
+        { h: "Delivery", b: "Timelines are provided by the painter per order. Hand-painting takes time; dates are estimates, not guarantees." },
+        { h: "Liability", b: "Lotus connects you with a painter and is provided “as is”. To the extent permitted by law, we are not liable for indirect or incidental damages." },
+      ],
+    },
+    contact: {
+      title: "Contact",
+      intro: "Questions about a commission or this site? We're happy to help.",
+      emailLabel: "Email",
+      email: "hello@lotus.example",
+      note: "For order questions, include your reference code (LOT-XXXXXX).",
+    },
+  },
+  common: {
+    language: "Language",
+    theme: "Theme",
+    light: "Light",
+    dark: "Dark",
+    system: "System",
+    by: "by",
+  },
+};
+
+export type Dictionary = typeof en;
+
+const fa: Dictionary = {
+  meta: {
+    title: "لوتوس — شاهکارهای نقاشی دست‌ساز برای دیوار شما",
+    description:
+      "یک نقاشی واقعی را که دوست دارید انتخاب کنید، آن را با واقعیت افزوده روی دیوار خود ببینید، و نقاش آن را روی بوم نقاشی کند — بافت واقعی، امضای واقعی.",
+  },
+  nav: {
+    how: "چگونه کار می‌کند",
+    gallery: "گالری",
+    sizes: "اندازه‌ها و قیمت",
+    browse: "نقاشی‌تان را بیابید",
+    signIn: "ورود",
+  },
+  hero: {
+    eyebrow: "دست‌ساز · شاهکارهای مالکیت عمومی",
+    titleLead: "یک نقاشی واقعی برای دیوار شما،",
+    titleAccent: "ساخته‌شده با دست.",
+    subtitle:
+      "یک شاهکار را بر پایهٔ رنگ، سبک و بودجه انتخاب کنید. آن را با واقعیت افزوده روی دیوار ببینید. نقاش آن را روی بوم بازآفرینی می‌کند — قلم‌موی واقعی، بافت واقعی، امضاشده با دست.",
+    ctaPrimary: "نقاشی‌تان را بیابید",
+    ctaSecondary: "ببینید چگونه کار می‌کند",
+    note: "بدون هنر تولیدشده با هوش مصنوعی · منابع موزه‌ای مالکیت عمومی · پیش از تصمیم، پیش‌نمایش ببینید",
+  },
+  marquee: [
+    "شاهکارهای مالکیت عمومی",
+    "دست‌ساز روی بوم",
+    "بافت و امضای واقعی",
+    "پیش‌نمایش روی دیوار با AR",
+    "ارسال درِ خانه",
+  ],
+  how: {
+    eyebrow: "چگونه کار می‌کند",
+    title: "از نقاشی‌ای که دوست دارید تا بومی روی دیوار شما.",
+    steps: [
+      {
+        title: "سلیقه‌تان را انتخاب کنید",
+        body: "یک تم، یک تنِ رنگی و یک بودجه بگویید. لوتوس نقاشی‌های واقعی متناسب را نشان می‌دهد — بدون جستجوی بی‌پایان.",
+      },
+      {
+        title: "روی دیوارتان ببینید",
+        body: "دوربین گوشی را به دیوار بگیرید و بوم قاب‌شده را در اندازهٔ واقعی پیش از تصمیم ببینید.",
+      },
+      {
+        title: "درخواست را بفرستید",
+        body: "یک اندازه و قاب انتخاب و تأیید کنید. درخواست شما مستقیم در تلگرام به نقاش می‌رسد.",
+      },
+      {
+        title: "نقاشی و ارسال",
+        body: "نقاش آن را با بافت واقعی روی بوم بازآفرینی، امضا و درِ خانه ارسال می‌کند.",
+      },
+    ],
+  },
+  featured: {
+    eyebrow: "مجموعه",
+    title: "شاهکارها، آمادهٔ دیوارهای شما.",
+    subtitle:
+      "گزیده‌ای برگزیده از موزه‌های بزرگ جهان — همه مالکیت عمومی، همه قابل بازآفرینی.",
+    cta: "ورود به گالری",
+    viewAll: "دیدن همهٔ نقاشی‌ها",
+  },
+  wall: {
+    eyebrow: "پیش‌نمایش با AR",
+    title: "پیش از تصمیم، آن را روی دیوارتان ببینید.",
+    body: "حدس زدن، دشمنِ هنرِ خوب روی دیوار است. دوربین را باز کنید، نقاشیِ قاب‌شده را در اندازهٔ واقعی قرار دهید و تا رسیدن به نقطهٔ درست جابه‌جایش کنید.",
+    points: [
+      "پیش‌نمایش قاب‌شده در اندازهٔ واقعی",
+      "در مرورگر کار می‌کند — بدون نصب اپلیکیشن",
+      "عکس بگیرید تا اتاق‌ها را مقایسه کنید",
+    ],
+    note: "بگیرید · قرار دهید · تجسم کنید.",
+  },
+  sizes: {
+    eyebrow: "اندازه‌ها و قیمت",
+    title: "اندازه‌های ساده. قیمت صادقانه.",
+    subtitle:
+      "اثر هنری مالکیت عمومی است — شما بهای دستِ نقاش و بوم را می‌پردازید. اندازه و قاب را انتخاب کنید؛ بقیه را با نقاش هماهنگ کنید.",
+    from: "از",
+    perPiece: "/ هر اثر",
+    frameLabel: "قاب‌ها",
+    frames: ["بوم بدون قاب", "چوب طبیعی", "مشکی", "سفید"],
+    tiers: [
+      { name: "کوچک", dims: "۳۰ × ۴۰ سانتی‌متر", price: "۱۲۰ دلار" },
+      { name: "متوسط", dims: "۵۰ × ۷۰ سانتی‌متر", price: "۲۲۰ دلار" },
+      { name: "بزرگ", dims: "۷۰ × ۱۰۰ سانتی‌متر", price: "۳۶۰ دلار" },
+      { name: "بسیار بزرگ", dims: "۹۰ × ۱۲۰ سانتی‌متر", price: "۵۴۰ دلار" },
+    ],
+    disclaimer: "قیمت‌ها تقریبی است. قیمت نهایی پیش از هرگونه پرداخت با نقاش تأیید می‌شود.",
+  },
+  values: {
+    eyebrow: "چرا لوتوس",
+    title: "هنر واقعی، به شیوهٔ واقعی.",
+    items: [
+      {
+        title: "نه هوش مصنوعی — نقاشی واقعی",
+        body: "هر اثر، یک اثر هنری اصیل از مجموعهٔ مالکیت عمومی یک موزه است که با دستِ انسان بازآفرینی می‌شود.",
+      },
+      {
+        title: "بافت و امضای واقعی",
+        body: "رنگ‌روغن روی بوم با قلم‌موی نمایان و امضای نقاش — یک اثر، نه یک چاپ.",
+      },
+      {
+        title: "پیش از پرداخت پیش‌نمایش ببینید",
+        body: "آن را روی دیوارتان ببینید و ابتدا اندازه و قاب را تأیید کنید. هنگام رسیدن، هیچ غافلگیری‌ای نیست.",
+      },
+      {
+        title: "قانوناً از آنِ شما",
+        body: "ما تنها از شاهکارهای مالکیت عمومی استفاده می‌کنیم، پس بازآفرینی شما کاملاً قانونی است.",
+      },
+    ],
+  },
+  faq: {
+    eyebrow: "پرسش‌ها",
+    title: "خوب است بدانید.",
+    items: [
+      {
+        q: "این‌ها چاپ‌اند یا نقاشی واقعی؟",
+        a: "نقاشی واقعی. نقاش اثر انتخابی شما را با دست روی بوم بازآفرینی می‌کند، با بافت اصیل و یک امضا.",
+      },
+      {
+        q: "نقاشی‌ها از کجا می‌آیند؟",
+        a: "از مجموعه‌های مالکیت عمومی موزه‌های بزرگ (مانند مِت). همین است که بازآفرینی دستی را قانونی و بی‌دغدغه می‌کند.",
+      },
+      {
+        q: "چگونه سفارش دهم؟",
+        a: "یک نقاشی، اندازه و قاب انتخاب کنید و درخواست را بفرستید. به نقاش در تلگرام می‌رسد که جزئیات و قیمت را مستقیم با شما تأیید می‌کند.",
+      },
+      {
+        q: "پیش‌نمایش روی دیوار چگونه کار می‌کند؟",
+        a: "دوربین گوشی، بوم قاب‌شده را در اندازهٔ واقعی روی دیوار قرار می‌دهد — درست در مرورگر، بدون هیچ نصبی.",
+      },
+      {
+        q: "چقدر طول می‌کشد؟",
+        a: "نقاشی دستی زمان می‌برد. نقاش هنگام تأیید سفارش، زمان‌بندی را به شما می‌گوید — معمولاً چند هفته.",
+      },
+    ],
+  },
+  cta: {
+    title: "نقاشی‌ای را که دیوارتان کم دارد، بیابید.",
+    subtitle: "شاهکارها را مرور کنید، یکی را در خانه پیش‌نمایش ببینید و بگذارید نقاش جانش ببخشد.",
+    button: "نقاشی‌تان را بیابید",
+    note: "شروع تنها یک دقیقه طول می‌کشد.",
+  },
+  footer: {
+    tagline: "شاهکارهای نقاشی دست‌ساز برای دیوار شما.",
+    product: "کاوش",
+    company: "لوتوس",
+    legal: "حقوقی",
+    links: {
+      how: "چگونه کار می‌کند",
+      gallery: "گالری",
+      sizes: "اندازه‌ها و قیمت",
+      about: "دربارهٔ ما",
+      contact: "تماس",
+      privacy: "حریم خصوصی",
+      terms: "قوانین",
+    },
+    rights: "همهٔ حقوق محفوظ است.",
+    sources: "آثار هنری با سپاس از مجموعه‌های موزه‌ای دسترسی‌آزاد (مالکیت عمومی).",
+  },
+  auth: {
+    signInTitle: "خوش آمدید",
+    signInSubtitle: "برای پیگیری سفارش‌ها وارد شوید.",
+    signUpTitle: "ایجاد حساب",
+    signUpSubtitle: "علاقه‌مندی‌ها را ذخیره و سفارش‌ها را دنبال کنید.",
+    email: "ایمیل",
+    password: "گذرواژه",
+    name: "نام کامل",
+    signIn: "ورود",
+    signUp: "ایجاد حساب",
+    haveAccount: "از قبل حساب دارید؟",
+    noAccount: "تازه‌وارد لوتوس هستید؟",
+    demoNote: "این نسخه یک دموی محلی است. برای فعال‌سازی ورود واقعی، Supabase را متصل کنید.",
+  },
+  dashboard: {
+    title: "استودیوی شما",
+    welcome: "سفارش‌های شما",
+    subtitle: "این یک اسکلت محلی است. برای دیدن دادهٔ زنده، Supabase و Prisma را متصل کنید.",
+    credits: "نقاشی‌های ذخیره‌شده",
+    workspace: "سفارش‌ها",
+    generate: "یافتن نقاشی",
+    library: "تاریخچهٔ سفارش",
+    settings: "تنظیمات",
+    signOut: "خروج",
+    empty: "هنوز سفارشی نیست. سفارش‌های شما اینجا نمایان می‌شود.",
+  },
+  discover: {
+    title: "نقاشی‌تان را بیابید",
+    subtitle: "یک حال‌وهوا، یک پالت و یک بودجه انتخاب کنید — شاهکارهای متناسب را نشان می‌دهیم.",
+    theme: "تم",
+    color: "تنِ رنگی",
+    budget: "بودجه",
+    any: "همه",
+    results: "نقاشی",
+    none: "هنوز نقاشی‌ای مطابقت ندارد — یک فیلتر را بازتر کنید.",
+    clear: "پاک‌کردن فیلترها",
+    categories: {
+      landscape: "منظره",
+      portrait: "پرتره",
+      floral: "گل",
+      "still-life": "طبیعت بی‌جان",
+      figures: "پیکره‌ها",
+      animals: "حیوانات",
+    },
+    tones: {
+      warm: "گرم",
+      cool: "سرد",
+      earthy: "خاکی",
+      vivid: "زنده",
+      muted: "ملایم",
+    },
+    budgets: ["زیر ۲۰۰ دلار", "۲۰۰ تا ۴۰۰ دلار", "بالای ۴۰۰ دلار"],
+  },
+  detail: {
+    by: "اثرِ",
+    size: "اندازه",
+    frame: "قاب",
+    total: "مجموع",
+    preview: "روی دیوارم پیش‌نمایش بده",
+    request: "درخواست این نقاشی",
+    note: "اثر مالکیت عمومی · دست‌ساز بنا به سفارش",
+    back: "بازگشت به گالری",
+  },
+  order: {
+    title: "درخواست نقاشی شما",
+    subtitle: "جزئیات را برای نقاش بفرستید. او زمان‌بندی و قیمت نهایی را با شما تأیید می‌کند.",
+    summary: "سفارش شما",
+    name: "نام شما",
+    contact: "ایمیل یا تلفن",
+    contactHint: "تا نقاش بتواند با شما تماس بگیرد.",
+    address: "نشانی تحویل",
+    note: "یادداشت برای نقاش (اختیاری)",
+    submit: "ارسال درخواست",
+    submitting: "در حال ارسال…",
+    cancel: "انصراف",
+    successTitle: "درخواست ارسال شد",
+    successBody: "درخواست سفارش شما به نقاش رسید. او برای تأیید جزئیات، زمان‌بندی و پرداخت با شما تماس می‌گیرد.",
+    ref: "کد پیگیری",
+    backHome: "بازگشت به خانه",
+    browse: "مرور نقاشی‌های بیشتر",
+    error: "مشکلی پیش آمد. لطفاً دوباره تلاش کنید.",
+    demoNote: "حالت دمو: درخواست ذخیره نمی‌شود و ارسال تلگرام تا زمان پیکربندی غیرفعال است.",
+  },
+  ar: {
+    title: "روی دیوارتان ببینید",
+    start: "شروع دوربین",
+    upload: "استفاده از عکس دیوار",
+    snapshot: "ذخیرهٔ عکس",
+    close: "بستن",
+    hint: "برای جابه‌جایی بکشید · با نوار لغزنده اندازه را تغییر دهید.",
+    size: "اندازه روی دیوار",
+    unsupported: "دوربین در دسترس نیست — به‌جای آن عکسی از دیوارتان بارگذاری کنید.",
+  },
+  legal: {
+    updated: "آخرین به‌روزرسانی: مرداد ۱۴۰۵",
+    back: "بازگشت به خانه",
+    privacy: {
+      title: "سیاست حریم خصوصی",
+      intro: "این سیاست توضیح می‌دهد لوتوس هنگام درخواست سفارش چه چیزی جمع‌آوری می‌کند و چگونه از آن استفاده می‌شود.",
+      sections: [
+        { h: "چه چیزی جمع‌آوری می‌کنیم", b: "هنگام درخواست نقاشی، اطلاعاتی را که وارد می‌کنید جمع‌آوری می‌کنیم: نام، راه تماس (ایمیل یا تلفن)، نشانی تحویل و هر یادداشت. نیازی به حساب نیست و در این سایت اطلاعات پرداخت جمع‌آوری نمی‌کنیم." },
+        { h: "چگونه استفاده می‌کنیم", b: "اطلاعات شما تنها برای انجام سفارش استفاده می‌شود — درخواست به نقاش ارسال می‌شود که برای تأیید اثر، زمان‌بندی و قیمت با شما تماس می‌گیرد. داده‌های شما را نمی‌فروشیم." },
+        { h: "اشتراک‌گذاری", b: "درخواست شما با نقاش مسئول سفارش (از طریق تلگرام) و در صورت فعال‌بودن، با ارائه‌دهندگان میزبانی و پایگاه‌داده صرفاً برای اجرای سرویس به اشتراک گذاشته می‌شود." },
+        { h: "آثار هنری", b: "نقاشی‌های نمایش‌داده‌شده از مجموعه‌های مالکیت عمومی موزه‌ها گرفته شده و به‌طور قانونی بازآفرینی می‌شوند." },
+        { h: "اختیارات شما", b: "می‌توانید هر زمان از طریق صفحهٔ تماس، دسترسی یا حذف داده‌های درخواست خود را بخواهید." },
+      ],
+    },
+    terms: {
+      title: "شرایط استفاده",
+      intro: "با استفاده از لوتوس و ثبت درخواست سفارش، این شرایط را می‌پذیرید.",
+      sections: [
+        { h: "سرویس", b: "لوتوس امکان درخواست بازآفرینی دستی یک اثر مالکیت عمومی روی بوم را می‌دهد. ثبت درخواست، سفارشِ الزام‌آور نیست — نقاش پیش از هر کار یا پرداخت، دامنه، زمان‌بندی و قیمت نهایی را با شما تأیید می‌کند." },
+        { h: "قیمت و پرداخت", b: "قیمت‌های نمایش‌داده‌شده تقریبی است. قیمت و پرداخت نهایی مستقیماً با نقاش هماهنگ می‌شود. در این وب‌سایت پرداختی دریافت نمی‌شود." },
+        { h: "بازآفرینی‌ها", b: "همهٔ آثار ارائه‌شده در مالکیت عمومی هستند. هر اثر یک بازآفرینی دستیِ اصیل با امضای نقاش است — نه یک جعل عین‌به‌عین." },
+        { h: "تحویل", b: "زمان‌بندی برای هر سفارش توسط نقاش اعلام می‌شود. نقاشی دستی زمان می‌برد؛ تاریخ‌ها تخمینی‌اند، نه تضمین‌شده." },
+        { h: "مسئولیت", b: "لوتوس شما را به یک نقاش متصل می‌کند و «همان‌گونه که هست» ارائه می‌شود. تا جایی که قانون اجازه دهد، مسئول خسارات غیرمستقیم یا اتفاقی نیستیم." },
+      ],
+    },
+    contact: {
+      title: "تماس",
+      intro: "پرسشی دربارهٔ سفارش یا این سایت دارید؟ خوشحال می‌شویم کمک کنیم.",
+      emailLabel: "ایمیل",
+      email: "hello@lotus.example",
+      note: "برای پرسش‌های مربوط به سفارش، کد پیگیری خود (LOT-XXXXXX) را ذکر کنید.",
+    },
+  },
+  common: {
+    language: "زبان",
+    theme: "پوسته",
+    light: "روشن",
+    dark: "تیره",
+    system: "سیستم",
+    by: "اثرِ",
+  },
+};
+
+const dictionaries: Record<Locale, Dictionary> = { en, fa };
+
+export function getDictionary(locale: Locale): Dictionary {
+  return dictionaries[locale] ?? dictionaries.en;
+}

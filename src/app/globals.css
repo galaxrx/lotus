@@ -1,0 +1,162 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Lotus — botanical editorial-luxury design tokens.
+  Colors are HSL channel triplets so Tailwind's <alpha-value> works.
+*/
+@layer base {
+  :root {
+    --font-serif: "Playfair Display", Georgia, serif;
+    --font-sans: "Inter", system-ui, sans-serif;
+
+    --background: 45 33% 97%; /* warm ivory */
+    --foreground: 156 22% 11%; /* botanical ink */
+    --surface: 0 0% 100%;
+    --muted: 96 16% 94%;
+    --muted-foreground: 153 8% 38%;
+    --border: 96 16% 88%;
+    --ring: 162 55% 24%;
+
+    --primary: 162 60% 20%; /* deep jade */
+    --primary-foreground: 45 33% 97%;
+
+    --accent: 8 45% 60%; /* petal rose */
+    --accent-foreground: 0 0% 100%;
+
+    --secondary: 96 16% 94%;
+    --secondary-foreground: 156 22% 11%;
+    --input: 96 16% 88%;
+
+    --gold: 40 48% 56%; /* antique gold */
+
+    --destructive: 6 55% 46%;
+    --destructive-foreground: 0 0% 100%;
+
+    --radius: 14px;
+  }
+
+  .dark {
+    --background: 156 30% 6%; /* deep botanical black */
+    --foreground: 90 14% 93%;
+    --surface: 156 26% 9%;
+    --muted: 156 20% 13%;
+    --muted-foreground: 150 10% 64%;
+    --border: 156 18% 18%;
+    --ring: 160 43% 52%;
+
+    --primary: 160 44% 52%; /* luminous jade */
+    --primary-foreground: 156 40% 6%;
+
+    --accent: 11 58% 74%; /* soft petal */
+    --accent-foreground: 156 40% 8%;
+
+    --secondary: 156 20% 13%;
+    --secondary-foreground: 90 14% 93%;
+    --input: 156 18% 18%;
+
+    --gold: 40 55% 66%;
+
+    --destructive: 6 58% 58%;
+    --destructive-foreground: 0 0% 100%;
+  }
+
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.16);
+  }
+
+  /* Persian: use Vazirmatn everywhere (Playfair/Inter don't cover Farsi),
+     and relax the tight tracking that suits Latin display type. */
+  html[lang="fa"] body,
+  html[lang="fa"] h1,
+  html[lang="fa"] h2,
+  html[lang="fa"] h3,
+  html[lang="fa"] h4 {
+    font-family: "Vazirmatn", system-ui, sans-serif;
+    letter-spacing: 0;
+  }
+
+  /* Flip the editorial hairline gradient direction under RTL. */
+  [dir="rtl"] .hairline {
+    transform: scaleX(-1);
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-content px-6 md:px-8;
+  }
+
+  /* Antique-gold hairline used as an editorial divider. */
+  .hairline {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      hsl(var(--gold) / 0.55),
+      transparent
+    );
+  }
+
+  .eyebrow {
+    @apply text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground;
+  }
+
+  /* Subtle paper grain for the artistic, tactile feel. */
+  .grain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .link-underline {
+    @apply relative;
+  }
+  .link-underline::after {
+    content: "";
+    @apply absolute -bottom-0.5 left-0 h-px w-0 bg-current transition-all duration-300;
+  }
+  .link-underline:hover::after {
+    @apply w-full;
+  }
+}
