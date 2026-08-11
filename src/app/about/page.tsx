@@ -21,6 +21,10 @@ const STYLE_IMAGES = [
   "DP-13139-001",
 ];
 
+// Public-domain exemplars used as illustrative photography through the page.
+const STORY_IMAGES = ["DP346474", "DT1980", "DP119115"]; // Irises · Fantin flowers · Harvesters
+const CRAFT_IMAGES = ["DP231550", "DP320128", "DP355525"]; // Card Players · Madame Cézanne · Vermeer
+
 const VALUE_ICONS = [Brush, HandHeart, Globe];
 
 export default async function AboutPage() {
@@ -57,6 +61,27 @@ export default async function AboutPage() {
                 ))}
               </div>
             </div>
+
+            {/* Illustrative art strip */}
+            <div className="mx-auto mt-12 grid max-w-4xl grid-cols-3 gap-3 sm:gap-5">
+              {STORY_IMAGES.map((file, i) => (
+                <div
+                  key={file}
+                  className={cn(
+                    "overflow-hidden rounded-2xl border border-border bg-surface p-1.5 shadow-soft ring-1 ring-gold/15",
+                    i === 1 ? "translate-y-4" : ""
+                  )}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={metImage(file)}
+                    alt=""
+                    loading="lazy"
+                    className="aspect-[3/4] w-full rounded-xl object-cover"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -85,16 +110,54 @@ export default async function AboutPage() {
 
         {/* ------------------------------ The founder ------------------------------ */}
         <section className="grain relative overflow-hidden">
-          <div className="container-page relative grid items-center gap-12 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:py-24">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -bottom-40 end-0 h-[30rem] w-[30rem] rounded-full opacity-60 blur-3xl"
+            style={{ background: "radial-gradient(circle, hsl(var(--accent) / 0.14), transparent 70%)" }}
+          />
+          <div className="container-page relative grid items-center gap-12 py-16 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 lg:py-24">
+            {/* Portrait first */}
+            <div className="relative mx-auto w-full max-w-md lg:mx-0">
+              <div className="relative rotate-[-1.4deg]">
+                <div className="overflow-hidden rounded-3xl border border-border bg-surface p-2 shadow-lift ring-1 ring-gold/25">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/artist/niloofar.png"
+                    alt={ab.founderName}
+                    className="aspect-[3/4] w-full rounded-2xl object-cover"
+                  />
+                </div>
+                <div className="absolute -bottom-5 start-6 flex items-center gap-2 rounded-full border border-border bg-background/95 px-4 py-2 shadow-soft backdrop-blur">
+                  <PenTool size={14} className="text-primary" />
+                  <span className="font-serif text-sm italic text-foreground/80">{ab.portraitCaption}</span>
+                </div>
+              </div>
+            </div>
+
             <div className="flex flex-col items-start">
               <p className="eyebrow inline-flex items-center gap-2">
                 <NiloosaMark tone="brand" className="h-4 w-4" />
-                {a.eyebrow}
+                {ab.founderEyebrow}
               </p>
-              <h2 className="mt-5 text-balance text-4xl leading-[1.02] md:text-6xl">{a.name}</h2>
-              <p className="mt-4 text-sm font-medium uppercase tracking-[0.18em] text-gold">{a.role}</p>
-              <p className="mt-7 max-w-xl font-serif text-2xl italic leading-snug text-foreground/85">{a.lead}</p>
-              <p className="mt-5 max-w-xl text-pretty leading-relaxed text-muted-foreground">{a.intro}</p>
+              <h2 className="mt-5 text-balance text-4xl leading-[1.02] md:text-6xl">{ab.founderName}</h2>
+              <p className="mt-4 text-sm font-medium uppercase tracking-[0.18em] text-gold">{ab.founderRole}</p>
+              <p className="mt-7 max-w-xl font-serif text-2xl italic leading-snug text-foreground/85">{ab.founderLead}</p>
+              <div className="mt-5 max-w-xl space-y-4 text-pretty leading-relaxed text-muted-foreground">
+                {ab.founderBio.map((p, i) => (
+                  <p key={i}>{p}</p>
+                ))}
+              </div>
+
+              {/* Small credentials row */}
+              <div className="mt-8 grid w-full max-w-xl grid-cols-3 gap-px overflow-hidden rounded-2xl border border-border bg-border">
+                {a.highlights.map((h) => (
+                  <div key={h.value} className="flex flex-col items-center gap-1 bg-background px-3 py-5 text-center">
+                    <span className="font-serif text-lg md:text-xl">{h.value}</span>
+                    <span className="text-xs text-muted-foreground">{h.label}</span>
+                  </div>
+                ))}
+              </div>
+
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <Link href="/discover" className={buttonClasses("primary", "lg")}>
                   {a.ctaPrimary}
@@ -105,28 +168,47 @@ export default async function AboutPage() {
                 </Link>
               </div>
             </div>
+          </div>
+        </section>
 
-            <div className="relative mx-auto w-full max-w-md lg:max-w-none">
-              <div className="relative rotate-[1.2deg]">
-                <div className="overflow-hidden rounded-3xl border border-border bg-surface p-2 shadow-lift ring-1 ring-gold/25">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/artist/niloofar.png"
-                    alt={a.name}
-                    className="aspect-[3/4] w-full rounded-2xl object-cover"
-                  />
-                </div>
-                <div className="absolute -bottom-5 start-6 flex items-center gap-2 rounded-full border border-border bg-background/95 px-4 py-2 shadow-soft backdrop-blur">
-                  <PenTool size={14} className="text-primary" />
-                  <span className="font-serif text-sm italic text-foreground/80">{a.name}</span>
-                </div>
-              </div>
+        {/* -------------------------------- The craft ------------------------------ */}
+        <section className="border-y border-border bg-surface/40">
+          <div className="container-page py-20 md:py-24">
+            <div className="mx-auto max-w-2xl text-center">
+              <p className="eyebrow inline-flex items-center gap-2 justify-center">
+                <PenTool size={14} /> {ab.craftTitle}
+              </p>
+              <h2 className="mt-4 text-balance text-4xl leading-tight md:text-5xl">{ab.craftTitle}</h2>
+              <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">{ab.craftBody}</p>
+            </div>
+
+            <div className="mt-14 grid gap-6 sm:grid-cols-3">
+              {ab.craftSteps.map((step, i) => (
+                <figure key={step.h} className="overflow-hidden rounded-2xl border border-border bg-background shadow-soft">
+                  <div className="relative overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={metImage(CRAFT_IMAGES[i % CRAFT_IMAGES.length])}
+                      alt=""
+                      loading="lazy"
+                      className="aspect-[4/3] w-full object-cover"
+                    />
+                    <span className="absolute start-3 top-3 grid h-8 w-8 place-items-center rounded-full border border-white/25 bg-black/45 font-serif text-xs text-white backdrop-blur">
+                      {i + 1}
+                    </span>
+                  </div>
+                  <figcaption className="p-5">
+                    <h3 className="text-lg font-semibold">{step.h}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{step.b}</p>
+                  </figcaption>
+                </figure>
+              ))}
             </div>
           </div>
         </section>
 
         {/* ------------------------------- Statement ------------------------------- */}
-        <section className="border-y border-border bg-surface/50">
+        <section className="border-b border-border">
           <div className="container-page py-20 md:py-24">
             <div className="mx-auto max-w-3xl text-center">
               <p className="eyebrow inline-flex items-center gap-2 justify-center">

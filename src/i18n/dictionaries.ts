@@ -498,6 +498,24 @@ const en = {
       { h: "A fair deal both ways", b: "Painters name their worth; buyers name their budget. We just make the meeting safe." },
       { h: "Made to reach you", b: "Built for the way people here actually pay, so sanctions never stand between you and a painting." },
     ],
+    founderEyebrow: "The painter behind it",
+    founderName: "Niloofar Ensafian",
+    founderRole: "Painter · Founder",
+    founderLead: "Niloosa began on one painter's easel — Niloofar's.",
+    founderBio: [
+      "Niloofar Ensafian has been painting for about as long as she can remember drawing. She learned the way the old painters did — copying the masters stroke by stroke until their choices became her own instinct — and then spent years finding her own hand in oil and canvas.",
+      "She started Niloosa for a plain reason: friends kept asking her to paint the pictures they loved but could never own. One commission turned into many, and those turned into a belief — that anyone should be able to live with a real, hand-painted piece, not a poster of one.",
+      "She still paints from a small studio, signs every canvas she finishes, and personally vouches for the other painters who join her here. When a piece leaves Niloosa, someone's hours are in it.",
+    ],
+    portraitCaption: "Niloofar, in the studio",
+    craftTitle: "How a canvas comes to life",
+    craftBody:
+      "Nothing here is printed. Each commission is drawn out, blocked in, and built up in layers over days — the same slow craft the originals were made with. The ridge of the brush, the depth of layered colour, the small human imperfections: that's the point, and it's what arrives on your wall.",
+    craftSteps: [
+      { h: "Drawn out", b: "The composition is laid in by hand, proportions checked against the original." },
+      { h: "Built in layers", b: "Colour goes on wet-into-wet and glaze over glaze, the way the masters worked." },
+      { h: "Signed", b: "When it's right, it's signed on the front and readied for your wall." },
+    ],
   },
   legal: {
     updated: "Last updated: August 2026",
@@ -1089,6 +1107,24 @@ const fa: Dictionary = {
       { h: "دستِ واقعی، رنگِ واقعی", b: "هر اثر را یک آدم نقاشی می‌کند، نه ماشین. همه‌ی حرف در همان ضربه‌ی قلم‌مو است." },
       { h: "معامله‌ی منصفانه برای هر دو طرف", b: "نقاش ارزش کارش را می‌گوید و خریدار بودجه‌اش را؛ ما فقط این دیدار را امن می‌کنیم." },
       { h: "ساخته‌شده تا به شما برسد", b: "متناسب با شیوه‌ای که مردم اینجا واقعاً پرداخت می‌کنند، تا تحریم هرگز میان شما و یک تابلو نایستد." },
+    ],
+    founderEyebrow: "نقاشی که پشت این کار است",
+    founderName: "نیلوفر انصافیان",
+    founderRole: "نقاش · بنیان‌گذار",
+    founderLead: "نیلوسا روی سه‌پایه‌ی یک نقاش شروع شد — سه‌پایه‌ی نیلوفر.",
+    founderBio: [
+      "نیلوفر انصافیان کمابیش از همان وقتی که یادش می‌آید طراحی کرده، نقاشی هم کرده است. مثل نقاش‌های قدیم یاد گرفت — با کپی‌کردن آثار استادان، ضربه به ضربه، تا انتخاب‌های آن‌ها به غریزه‌ی خودش تبدیل شد — و بعد سال‌ها گشت تا دستِ خودش را در رنگ روغن و بوم پیدا کند.",
+      "نیلوسا را به دلیل ساده‌ای راه انداخت: دوستانش مدام از او می‌خواستند تابلوهایی را که دوست داشتند اما هرگز نمی‌توانستند صاحبش شوند برایشان بکشد. یک سفارش شد چند سفارش، و آن‌ها شدند یک باور — که هر کسی باید بتواند یک اثرِ واقعیِ دست‌ساز روی دیوارش داشته باشد، نه پوستری از آن.",
+      "هنوز از یک آتلیه‌ی کوچک نقاشی می‌کند، پای هر بومی که تمام می‌کند را امضا می‌زند و شخصاً پشت نقاش‌های دیگری که به این‌جا می‌پیوندند می‌ایستد. وقتی اثری از نیلوسا بیرون می‌رود، ساعت‌های یک آدم در آن است.",
+    ],
+    portraitCaption: "نیلوفر، در آتلیه",
+    craftTitle: "یک بوم چطور جان می‌گیرد",
+    craftBody:
+      "اینجا هیچ‌چیز چاپ نمی‌شود. هر سفارش با دست طراحی می‌شود، رنگ‌گذاری اولیه می‌شود و طی چند روز لایه‌به‌لایه ساخته می‌شود — همان کارِ آهسته‌ای که اصلِ اثر با آن ساخته شده بود. برجستگی قلم‌مو، عمق رنگِ لایه‌لایه و آن ناهمواری‌های کوچکِ انسانی: همه‌ی حرف همین است و همین به دیوار شما می‌رسد.",
+    craftSteps: [
+      { h: "طراحی", b: "ترکیب‌بندی با دست ریخته می‌شود و تناسب‌ها با اصل اثر سنجیده می‌شود." },
+      { h: "لایه‌لایه", b: "رنگ به‌صورت خیس‌در‌خیس و لعاب روی لعاب گذاشته می‌شود، همان‌طور که استادان کار می‌کردند." },
+      { h: "امضا", b: "وقتی درست شد، روی اثر امضا می‌خورد و برای دیوار شما آماده می‌شود." },
     ],
   },
   legal: {
