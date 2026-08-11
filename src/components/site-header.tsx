@@ -41,11 +41,11 @@ export function SiteHeader() {
   }, [open]);
 
   const links = [
-    { href: "/#how", label: dict.nav.how },
     { href: "/gallery", label: dict.nav.gallery },
-    { href: "/artist", label: dict.nav.artist },
+    { href: "/ateliers", label: dict.nav.ateliers },
     { href: "/styles", label: dict.nav.styles },
-    { href: "/#sizes", label: dict.nav.sizes },
+    { href: "/about", label: dict.nav.about },
+    { href: "/studio", label: dict.nav.portal },
   ];
 
   return (

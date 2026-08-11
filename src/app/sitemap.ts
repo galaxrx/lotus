@@ -4,7 +4,7 @@ import { PAINTINGS } from "@/data/paintings";
 const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = ["", "/discover", "/gallery", "/artist", "/styles", "/contact", "/privacy", "/terms"].map(
+  const routes = ["", "/discover", "/gallery", "/about", "/ateliers", "/studio", "/styles", "/contact", "/privacy", "/terms"].map(
     (path) => ({
       url: `${siteUrl}${path}`,
       changeFrequency: "weekly" as const,

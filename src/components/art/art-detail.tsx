@@ -146,7 +146,12 @@ export function ArtDetail({
       </div>
 
       {showAR && (
-        <WallPreview imageUrl={painting.imageUrl} title={painting.title} onClose={() => setShowAR(false)} />
+        <WallPreview
+          imageUrl={painting.imageUrl}
+          title={painting.title}
+          frame={frame.id}
+          onClose={() => setShowAR(false)}
+        />
       )}
       {showOrder && (
         <OrderForm

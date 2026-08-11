@@ -29,7 +29,9 @@ export function SiteFooter() {
           </FooterCol>
 
           <FooterCol title={dict.footer.company}>
-            <FooterLink href="/artist">{dict.footer.links.about}</FooterLink>
+            <FooterLink href="/about">{dict.footer.links.about}</FooterLink>
+            <FooterLink href="/ateliers">{dict.nav.ateliers}</FooterLink>
+            <FooterLink href="/studio">{dict.nav.portal}</FooterLink>
             <FooterLink href="/contact">{dict.footer.links.contact}</FooterLink>
           </FooterCol>
 

@@ -4,6 +4,22 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Camera, ImageUp, Download, Share2, X } from "lucide-react";
 import { useI18n } from "@/i18n/provider";
 import { Button } from "@/components/ui/button";
+import type { FrameId } from "@/lib/config";
+
+// Frame looks for the preview. Fractions are relative to the painting's width, so
+// the frame and mat scale with the piece. `stops` drive a diagonal gradient that
+// gives wood/gold a little depth; `mat` is the card-stock border inside the frame.
+const AR_FRAMES: Record<
+  FrameId,
+  { frameFrac: number; matFrac: number; stops: [string, string]; matColor: string }
+> = {
+  none: { frameFrac: 0, matFrac: 0, stops: ["#00000000", "#00000000"], matColor: "#faf7f0" },
+  wood: { frameFrac: 0.05, matFrac: 0.03, stops: ["#7a5230", "#432b16"], matColor: "#f6f1e6" },
+  black: { frameFrac: 0.045, matFrac: 0.03, stops: ["#2d2925", "#0e0c0a"], matColor: "#f6f1e6" },
+  white: { frameFrac: 0.045, matFrac: 0.028, stops: ["#ffffff", "#e6e1d6"], matColor: "#f2ede2" },
+  gold: { frameFrac: 0.055, matFrac: 0.03, stops: ["#f1d688", "#9c6f24"], matColor: "#f6f1e6" },
+};
+const FRAME_ORDER: FrameId[] = ["none", "wood", "black", "white", "gold"];
 
 /**
  * "See it on your wall" preview. Uses the device's rear camera (getUserMedia)
@@ -16,13 +32,17 @@ export function WallPreview({
   imageUrl,
   title,
   onClose,
+  frame: initialFrame = "wood",
 }: {
   imageUrl: string;
   title: string;
   onClose: () => void;
+  frame?: FrameId;
 }) {
   const { dict } = useI18n();
   const t = dict.ar;
+  const [frame, setFrame] = useState<FrameId>(initialFrame);
+  const frameStyle = AR_FRAMES[frame];
 
   const sceneRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -158,16 +178,38 @@ export function WallPreview({
         if (bg) drawCover(bg, bg.naturalWidth, bg.naturalHeight);
       }
 
-      // The framed painting on top.
-      const pw = scale * w;
-      const ph = pw * ratio;
-      const px = pos.x * w;
-      const py = pos.y * h;
-      const border = Math.max(4, pw * 0.03);
-      ctx.fillStyle = "#faf7f0";
-      ctx.fillRect(px - border, py - border, pw + border * 2, ph + border * 2);
+      // The framed painting on top — frame → mat → canvas, matching the overlay.
+      const outerW = scale * w;
+      const outerX = pos.x * w;
+      const outerY = pos.y * h;
+      const fW = outerW * frameStyle.frameFrac;
+      const matBoxW = outerW - 2 * fW;
+      const mP = matBoxW * frameStyle.matFrac;
+      const imgW = matBoxW - 2 * mP;
+      const imgH = imgW * ratio;
+      const outerH = 2 * fW + 2 * mP + imgH;
+
+      ctx.save();
+      ctx.shadowColor = "rgba(0,0,0,0.5)";
+      ctx.shadowBlur = outerW * 0.06;
+      ctx.shadowOffsetY = outerW * 0.03;
+      if (frameStyle.frameFrac > 0) {
+        const grad = ctx.createLinearGradient(outerX, outerY, outerX + outerW, outerY + outerH);
+        grad.addColorStop(0, frameStyle.stops[0]);
+        grad.addColorStop(1, frameStyle.stops[1]);
+        ctx.fillStyle = grad;
+      } else {
+        ctx.fillStyle = frameStyle.matColor;
+      }
+      ctx.fillRect(outerX, outerY, outerW, outerH);
+      ctx.restore();
+
+      if (frameStyle.frameFrac > 0) {
+        ctx.fillStyle = frameStyle.matColor;
+        ctx.fillRect(outerX + fW, outerY + fW, outerW - 2 * fW, outerH - 2 * fW);
+      }
       const art = await loadArt().catch(() => null);
-      if (art) ctx.drawImage(art, px, py, pw, ph);
+      if (art) ctx.drawImage(art, outerX + fW + mP, outerY + fW + mP, imgW, imgH);
 
       const blob = await new Promise<Blob | null>((resolve) =>
         canvas.toBlob((b) => resolve(b), "image/png")
@@ -263,31 +305,88 @@ export function WallPreview({
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
-            className="absolute cursor-grab touch-none rounded-[2px] border-[6px] border-[#faf7f0] shadow-2xl active:cursor-grabbing"
+            className="absolute cursor-grab touch-none active:cursor-grabbing"
             style={{
               left: `${pos.x * 100}%`,
               top: `${pos.y * 100}%`,
               width: `${scale * 100}%`,
+              filter: "drop-shadow(0 14px 20px rgba(0,0,0,0.5))",
             }}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={imageUrl}
-              alt={title}
-              onLoad={(e) => {
-                const el = e.currentTarget;
-                if (el.naturalWidth) setRatio(el.naturalHeight / el.naturalWidth);
+            {/* Frame → mat → canvas, each scaled to the piece width. */}
+            <div
+              style={{
+                background:
+                  frameStyle.frameFrac > 0
+                    ? `linear-gradient(135deg, ${frameStyle.stops[0]}, ${frameStyle.stops[1]})`
+                    : "transparent",
+                padding: `${frameStyle.frameFrac * 100}%`,
+                boxShadow:
+                  frameStyle.frameFrac > 0
+                    ? "inset 0 0 0 1px rgba(0,0,0,0.28), inset 0 2px 3px rgba(255,255,255,0.25)"
+                    : undefined,
               }}
-              className="pointer-events-none block w-full select-none"
-              draggable={false}
-            />
+            >
+              <div style={{ background: frameStyle.matColor, padding: `${frameStyle.matFrac * 100}%` }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={imageUrl}
+                  alt={title}
+                  onLoad={(e) => {
+                    const el = e.currentTarget;
+                    if (el.naturalWidth) setRatio(el.naturalHeight / el.naturalWidth);
+                  }}
+                  className="pointer-events-none block w-full select-none"
+                  draggable={false}
+                />
+              </div>
+            </div>
           </div>
+        )}
+
+        {/* Soft wall-light vignette for depth (doesn't intercept pointer events). */}
+        {mode !== "idle" && (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{ background: "radial-gradient(120% 90% at 50% 30%, transparent 55%, rgba(0,0,0,0.28))" }}
+          />
         )}
       </div>
 
       {/* Controls */}
       {mode !== "idle" && (
-        <div className="flex flex-col gap-3 bg-black px-5 py-4 text-white sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 bg-black px-5 py-4 text-white">
+          {/* Frame picker */}
+          <div className="flex items-center gap-2 overflow-x-auto">
+            <span className="shrink-0 text-xs uppercase tracking-wider opacity-70">{t.frame}</span>
+            {FRAME_ORDER.map((fid, i) => {
+              const fs = AR_FRAMES[fid];
+              const active = frame === fid;
+              return (
+                <button
+                  key={fid}
+                  type="button"
+                  onClick={() => setFrame(fid)}
+                  aria-pressed={active}
+                  title={dict.sizes.frames[i]}
+                  className={`grid h-8 w-8 shrink-0 place-items-center rounded-md ring-2 ring-offset-2 ring-offset-black transition-all cursor-pointer ${
+                    active ? "ring-primary" : "ring-transparent hover:ring-white/40"
+                  }`}
+                  style={{
+                    background:
+                      fid === "none"
+                        ? "repeating-linear-gradient(45deg, #333 0 4px, #222 4px 8px)"
+                        : `linear-gradient(135deg, ${fs.stops[0]}, ${fs.stops[1]})`,
+                  }}
+                >
+                  {fid === "none" && <X size={13} className="text-white/70" />}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <label className="flex items-center gap-3 text-xs">
             <span className="uppercase tracking-wider opacity-70">{t.size}</span>
             <input
@@ -311,6 +410,7 @@ export function WallPreview({
             >
               <Camera size={15} /> {busy ? t.capturing : t.snapshot}
             </button>
+          </div>
           </div>
         </div>
       )}

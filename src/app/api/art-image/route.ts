@@ -32,8 +32,16 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Host not allowed" }, { status: 403 });
   }
 
+  // Wikimedia's upload host 403s requests without a browser-like User-Agent, which
+  // would make the AR snapshot come out blank. A UA + Referer keeps it happy; The
+  // Met has no such requirement.
   const upstream = await fetch(target.toString(), {
-    headers: { accept: "image/*" },
+    headers: {
+      accept: "image/*",
+      "user-agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+      referer: "https://niloosa.app/",
+    },
     cache: "force-cache",
   }).catch(() => null);
 
