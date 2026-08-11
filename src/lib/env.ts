@@ -55,6 +55,24 @@ export const serverEnv = {
   get telegramChatId() {
     return optional("TELEGRAM_CHAT_ID");
   },
+  /** Public auction channel the owner forwards anonymized offers to (display only). */
+  get telegramChannel() {
+    return optional("TELEGRAM_CHANNEL");
+  },
+  /** Gate for the /admin escrow dashboard. */
+  get adminToken() {
+    return optional("ADMIN_TOKEN");
+  },
+  /** Owner's card-to-card / Sheba details, shown on the deposit-instruction page. */
+  get ownerCardNumber() {
+    return optional("OWNER_CARD_NUMBER");
+  },
+  get ownerCardHolder() {
+    return optional("OWNER_CARD_HOLDER");
+  },
+  get ownerSheba() {
+    return optional("OWNER_SHEBA");
+  },
   /** Comma-separated allowlist of hostnames the URL importer may fetch. */
   get importAllowlist(): string[] {
     return (optional("IMPORT_URL_ALLOWLIST") ?? "")

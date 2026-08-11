@@ -40,7 +40,6 @@ export const CATEGORIES: Category[] = [
   "figures",
   "animals",
   "abstract",
-  "calligraphy",
 ];
 
 export const TONES: Tone[] = ["warm", "cool", "earthy", "vivid", "muted"];

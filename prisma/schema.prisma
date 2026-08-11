@@ -13,24 +13,42 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// A guest commission request for a hand-painted canvas.
+// A guest commission: the customer names a price (an offer) on a piece, which the
+// owner brokers to an artist. Sensitive contact fields live here but are only ever
+// read server-side (RLS denies the anon key). See docs/SYSTEM_DESIGN.md §4.
 model Order {
   id            String   @id @default(uuid()) @db.Uuid
   ref           String   @unique
+  source        String   @default("catalog") // catalog | artist
   paintingId    Int
   paintingTitle String
   artist        String
+  artworkId     String?  @db.Uuid
+  imageUrl      String   @default("")
   sizeId        String
   frameId       String
-  priceUsd      Int
+  suggestedUsd   Int // server-computed indicative floor
+  suggestedToman Int
+  offeredUsd      Int
+  offeredToman    Int
+  offeredCurrency String @default("toman") // the currency the customer actually typed
+  depositUsd    Int
+  depositToman  Int
   customerName  String
   contact       String
   address       String
   note          String?
-  status        String   @default("requested")
+  status        String   @default("offer_pending")
+  matchedArtistId     String?   @db.Uuid
+  depositTrackingCode String?
+  channelPostedAt     DateTime?
+  depositConfirmedAt  DateTime?
+  deliveredAt         DateTime?
+  completedAt         DateTime?
   createdAt     DateTime @default(now())
 
   @@index([ref])
+  @@index([status])
   @@map("orders")
 }
 

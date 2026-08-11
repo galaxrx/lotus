@@ -1,12 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { X, Loader2, Send } from "lucide-react";
 import { useI18n } from "@/i18n/provider";
 import { Button } from "@/components/ui/button";
-import { formatPrice } from "@/lib/config";
+import { computePrice, computePriceToman, formatMoney } from "@/lib/config";
 import type { ArtDetailData } from "@/components/art/art-detail";
+
+const FA_DIGITS = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+const toFaDigits = (s: string) => s.replace(/\d/g, (d) => FA_DIGITS[Number(d)]);
+const toEnDigits = (s: string) => s.replace(/[۰-۹]/g, (d) => String(FA_DIGITS.indexOf(d)));
 
 export function OrderForm({
   painting,
@@ -30,8 +34,33 @@ export function OrderForm({
   const { dict, locale } = useI18n();
   const o = dict.order;
   const router = useRouter();
+
+  const currency: "usd" | "toman" = locale === "fa" ? "toman" : "usd";
+  const suggested = useMemo(
+    () =>
+      (currency === "toman"
+        ? computePriceToman(sizeId, frameId, complexityId)
+        : computePrice(sizeId, frameId, complexityId)) ?? 0,
+    [currency, sizeId, frameId, complexityId]
+  );
+
+  // The offer starts at our estimate; the customer can move it up or down.
+  const [offer, setOffer] = useState<number>(suggested);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const low = offer > 0 && offer < suggested * 0.6;
+  const step = currency === "toman" ? 500_000 : 10;
+
+  function displayOffer(v: number): string {
+    const grouped = v.toLocaleString("en-US");
+    return currency === "toman" ? toFaDigits(grouped) : grouped;
+  }
+
+  function parseOffer(raw: string): number {
+    const digits = toEnDigits(raw).replace(/[^\d]/g, "");
+    return digits ? parseInt(digits, 10) : 0;
+  }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -46,6 +75,8 @@ export function OrderForm({
           paintingId: painting.id,
           sizeId,
           frameId,
+          offeredAmount: offer,
+          offeredCurrency: currency,
           name: String(form.get("name") ?? ""),
           contact: String(form.get("contact") ?? ""),
           address: String(form.get("address") ?? ""),
@@ -92,10 +123,53 @@ export function OrderForm({
               {sizeLabel} · {frameLabel} · {complexityLabel}
             </p>
           </div>
-          <span className="font-serif text-xl">{formatPrice(locale, sizeId, frameId, complexityId)}</span>
+          <div className="text-end">
+            <p className="text-[11px] uppercase tracking-wider text-muted-foreground">{o.estimate}</p>
+            <span className="font-serif text-lg">{formatMoney(suggested, currency)}</span>
+          </div>
         </div>
 
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
+          {/* Offer */}
+          <div className="space-y-1.5">
+            <label htmlFor="offer" className="text-sm font-medium">
+              {o.offerLabel}
+            </label>
+            <div className="flex items-stretch overflow-hidden rounded-xl border border-border bg-surface focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30">
+              <button
+                type="button"
+                aria-label="-"
+                onClick={() => setOffer((v) => Math.max(0, v - step))}
+                className="w-11 shrink-0 text-lg text-muted-foreground hover:bg-muted cursor-pointer"
+              >
+                −
+              </button>
+              <input
+                id="offer"
+                inputMode="numeric"
+                autoComplete="off"
+                value={displayOffer(offer)}
+                onChange={(e) => setOffer(parseOffer(e.target.value))}
+                className="min-w-0 flex-1 border-x border-border bg-transparent px-3 text-center text-lg font-medium tabular-nums outline-none"
+              />
+              <button
+                type="button"
+                aria-label="+"
+                onClick={() => setOffer((v) => v + step)}
+                className="w-11 shrink-0 text-lg text-muted-foreground hover:bg-muted cursor-pointer"
+              >
+                +
+              </button>
+              <span className="flex items-center whitespace-nowrap px-3 text-sm text-muted-foreground">
+                {currency === "toman" ? "تومان" : "USD"}
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground">{o.offerHint}</p>
+            {low && (
+              <p className="text-xs text-gold">{o.lowOfferWarn}</p>
+            )}
+          </div>
+
           <Field name="name" label={o.name} autoComplete="name" required />
           <Field name="contact" label={o.contact} hint={o.contactHint} autoComplete="email" required />
           <Field name="address" label={o.address} autoComplete="street-address" required />
@@ -115,7 +189,7 @@ export function OrderForm({
             </p>
           )}
 
-          <Button type="submit" size="lg" className="w-full" disabled={loading}>
+          <Button type="submit" size="lg" className="w-full" disabled={loading || offer <= 0}>
             {loading ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
             {loading ? o.submitting : o.submit}
           </Button>
