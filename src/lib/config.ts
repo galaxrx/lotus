@@ -20,10 +20,12 @@ export interface SizeTier {
   priceToman: number;
 }
 export interface FrameOption {
-  id: "none" | "wood" | "black" | "white";
+  id: "none" | "wood" | "black" | "white" | "gold";
   priceUsd: number;
   priceToman: number;
 }
+
+export type FrameId = FrameOption["id"];
 export interface ComplexityTier {
   id: Complexity;
   priceUsd: number;
@@ -49,7 +51,29 @@ export const FRAMES: FrameOption[] = [
   { id: "wood", priceUsd: 40, priceToman: 2_000_000 },
   { id: "black", priceUsd: 35, priceToman: 1_500_000 },
   { id: "white", priceUsd: 35, priceToman: 1_500_000 },
+  { id: "gold", priceUsd: 55, priceToman: 3_000_000 },
 ];
+
+// --- Escrow / commission economics (see docs/SYSTEM_DESIGN.md §4) --------------
+// The app never moves money; these numbers drive the instructions it renders.
+// Deposit secures the commission and is what unlocks contact between the two
+// parties. Commission is the owner's cut, taken at completion.
+export const DEPOSIT_RATE = 0.3; // 30% of the accepted offer, up front
+export const COMMISSION_RATE = 0.1; // 10% to the owner at delivery
+
+// Indicative free-market conversion, editable. Iran's rate floats a lot, so this
+// is only ever used to show an approximate second-currency figure alongside the
+// authoritative one the customer actually typed — never to compute a real charge.
+export const TOMAN_PER_USD = 700_000;
+
+export const usdToToman = (usd: number) => Math.round((usd * TOMAN_PER_USD) / 100_000) * 100_000;
+export const tomanToUsd = (toman: number) => Math.round(toman / TOMAN_PER_USD);
+
+/** Deposit due (rounded) for an accepted amount, in the same currency. */
+export const depositOf = (amount: number, currency: "usd" | "toman") =>
+  currency === "toman"
+    ? Math.round((amount * DEPOSIT_RATE) / 100_000) * 100_000
+    : Math.round(amount * DEPOSIT_RATE);
 
 export function sizeById(id: string): SizeTier | undefined {
   return SIZE_TIERS.find((s) => s.id === id);
@@ -88,6 +112,16 @@ export function formatToman(amount: number): string {
     .replace(/,/g, "٬")
     .replace(/\d/g, (d) => FA_DIGITS[Number(d)]);
   return `${grouped} تومان`;
+}
+
+/** Format a USD amount, e.g. "$1,240". */
+export function formatUsd(amount: number): string {
+  return `$${Math.round(amount).toLocaleString("en-US")}`;
+}
+
+/** Format an amount in an explicit currency (toman → Persian digits, usd → $). */
+export function formatMoney(amount: number, currency: "usd" | "toman"): string {
+  return currency === "toman" ? formatToman(amount) : formatUsd(amount);
 }
 
 /** Locale-aware price label for a (size, frame, complexity) trio: toman for `fa`, USD otherwise. */

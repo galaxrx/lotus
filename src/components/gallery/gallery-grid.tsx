@@ -61,10 +61,11 @@ export function GalleryGrid() {
         <p className="mt-4 text-pretty text-muted-foreground">{g.subtitle}</p>
       </div>
 
-      {/* Masonry grid (CSS columns) */}
-      <div className="mt-12 columns-2 gap-4 sm:columns-3 lg:columns-4">
+      {/* Uniform grid — equal tiles keep the rows aligned on every screen.
+          Full, uncropped images live in the lightbox on tap. */}
+      <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
         {PAINTINGS.map((p, i) => (
-          <figure key={p.id} className="mb-4 break-inside-avoid">
+          <figure key={p.id}>
             <button
               type="button"
               onClick={() => setActive(i)}
@@ -76,7 +77,7 @@ export function GalleryGrid() {
                 src={imageOf(p)}
                 alt={`${p.title} — ${p.artist}`}
                 loading="lazy"
-                className="w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
               />
               <span className="pointer-events-none absolute inset-0 flex items-end bg-gradient-to-t from-black/75 via-black/10 to-transparent p-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                 <span className="min-w-0">
