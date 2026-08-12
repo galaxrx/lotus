@@ -100,6 +100,22 @@ export function DepositPanel({
 
       {configured ? (
         <>
+          <div className="mt-5 border-t border-border pt-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              {d.payHowTitle}
+            </p>
+            <ol className="mt-3 space-y-2.5">
+              {d.payHowSteps.map((step, i) => (
+                <li key={i} className="flex gap-3 text-sm text-muted-foreground">
+                  <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary">
+                    {i + 1}
+                  </span>
+                  <span>{step}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+
           <div className="mt-5 border-t border-border pt-3">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
               {d.payToTitle}
