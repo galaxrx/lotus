@@ -42,6 +42,7 @@ export function SiteHeader() {
 
   const links = [
     { href: "/gallery", label: dict.nav.gallery },
+    { href: "/match", label: dict.nav.match },
     { href: "/ateliers", label: dict.nav.ateliers },
     { href: "/styles", label: dict.nav.styles },
     { href: "/about", label: dict.nav.about },
