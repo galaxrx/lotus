@@ -81,7 +81,9 @@ export function MatchClient() {
   );
 
   const atResults = stepIndex >= steps.length;
-  const results = useMemo(() => (atResults ? matchPaintings(answers) : []), [atResults, answers]);
+  // Cap at the strongest 60 matches (best first) — enough to browse, without
+  // diluting into the weakly-relevant tail that a single-tone match would add.
+  const results = useMemo(() => (atResults ? matchPaintings(answers, 60) : []), [atResults, answers]);
 
   function choose(key: StepKey, value: string) {
     setAnswers((a) => ({ ...a, [key]: value }) as MatchAnswers);
