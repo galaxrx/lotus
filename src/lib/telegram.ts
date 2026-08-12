@@ -110,12 +110,18 @@ export async function sendOfferToTelegram(o: OfferNotification): Promise<"sent" 
   // Forward-ready card — identical piece, no client details. Sent to the owner's
   // own chat right after the private card so they can copy or forward it to the
   // public auction channel. Kept pristine so a plain forward reads cleanly.
+  const contact = serverEnv.telegramOwnerContact;
+  const reach = contact
+    ? contact.startsWith("http")
+      ? `<a href="${escapeHtml(contact)}">message the owner</a>`
+      : `message ${escapeHtml(contact)}`
+    : "message the channel admin";
   const channelCaption = [
     "🖼 <b>Commission up for auction</b>",
     piece,
     spec,
     `💎 <b>Commission:</b> ${escapeHtml(both(o.offeredUsd, o.offeredToman))}`,
-    `Ref ${escapeHtml(o.ref)} — reply to take it on.`,
+    `👉 To take it on, ${reach} and quote ref <b>${escapeHtml(o.ref)}</b>.`,
     openLink,
   ].join("\n");
 

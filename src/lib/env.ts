@@ -59,6 +59,10 @@ export const serverEnv = {
   get telegramChannel() {
     return optional("TELEGRAM_CHANNEL");
   },
+  /** How a painter reaches the owner to claim a job — an @handle or a t.me link. */
+  get telegramOwnerContact() {
+    return optional("TELEGRAM_OWNER_CONTACT");
+  },
   /** Gate for the /admin escrow dashboard. */
   get adminToken() {
     return optional("ADMIN_TOKEN");
