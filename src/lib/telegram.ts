@@ -103,24 +103,24 @@ export async function sendOfferToTelegram(o: OfferNotification): Promise<"sent" 
     o.note ? `Note: ${escapeHtml(o.note.slice(0, 300))}` : "",
     "",
     openLink,
+    "",
+    `➡️ <i>The next message has no client details — forward it to your channel${channel ? ` ${escapeHtml(channel)}` : ""}.</i>`,
   ].filter(Boolean).join("\n");
 
-  const ownerOk = await sendCard(chatId, o.imageUrl, ownerCaption);
+  // Forward-ready card — identical piece, no client details. Sent to the owner's
+  // own chat right after the private card so they can copy or forward it to the
+  // public auction channel. Kept pristine so a plain forward reads cleanly.
+  const channelCaption = [
+    "🖼 <b>Commission up for auction</b>",
+    piece,
+    spec,
+    `💎 <b>Commission:</b> ${escapeHtml(both(o.offeredUsd, o.offeredToman))}`,
+    `Ref ${escapeHtml(o.ref)} — reply to take it on.`,
+    openLink,
+  ].join("\n");
 
-  // Anonymized auction card — posted straight to the public channel when one is
-  // configured (and it isn't just the owner's own chat). Without a channel we send
-  // nothing extra, so the owner gets exactly one message per order, not two.
-  if (channel && channel !== chatId) {
-    const channelCaption = [
-      "🖼 <b>Commission up for auction</b>",
-      piece,
-      spec,
-      `💎 <b>Commission:</b> ${escapeHtml(both(o.offeredUsd, o.offeredToman))}`,
-      `Ref ${escapeHtml(o.ref)} — reply to take it on.`,
-      openLink,
-    ].join("\n");
-    await sendCard(channel, o.imageUrl, channelCaption); // best-effort
-  }
+  const ownerOk = await sendCard(chatId, o.imageUrl, ownerCaption);
+  await sendCard(chatId, o.imageUrl, channelCaption);
   return ownerOk ? "sent" : "failed";
 }
 
@@ -139,21 +139,25 @@ export interface PurchaseNotification {
 }
 
 /**
- * A direct purchase of an artist's original work. Unlike a catalog commission this
- * isn't an auction — the artist is already known — so there's no channel post. The
- * owner gets one private card with the artwork photo, a link, and the buyer's details.
+ * A direct purchase of an artist's original work. The artist is already known, so
+ * there's no auction. The owner gets a private card with the buyer's details, plus
+ * a second card with no buyer details they can copy or forward to their channel.
  */
 export async function sendPurchaseToTelegram(o: PurchaseNotification): Promise<"sent" | "stubbed" | "failed"> {
   const token = serverEnv.telegramBotToken;
   const chatId = serverEnv.telegramChatId;
+  const channel = serverEnv.telegramChannel ?? "";
   if (!token || !chatId) return "stubbed";
 
-  const caption = [
+  const priceLine = `${formatUsd(o.priceUsd)} · ${formatToman(o.priceToman)}`;
+
+  // Private card — owner only, with the buyer's details.
+  const ownerCaption = [
     "🛒 <b>New purchase</b>",
     `Ref: ${escapeHtml(o.ref)}`,
     "",
     `<b>${escapeHtml(o.artworkTitle)}</b> — by ${escapeHtml(o.artistName)}`,
-    `💎 <b>Price:</b> ${escapeHtml(`${formatUsd(o.priceUsd)} · ${formatToman(o.priceToman)}`)}`,
+    `💎 <b>Price:</b> ${escapeHtml(priceLine)}`,
     "",
     "👤 <b>Buyer — private</b>",
     `Name: ${escapeHtml(o.customerName)}`,
@@ -163,9 +167,21 @@ export async function sendPurchaseToTelegram(o: PurchaseNotification): Promise<"
     "",
     `🔗 <a href="${escapeHtml(o.link)}">Open the artist's studio</a>`,
     "Take a deposit, then introduce the buyer and the artist.",
+    "",
+    `➡️ <i>The next message has no buyer details — forward it to your channel${channel ? ` ${escapeHtml(channel)}` : ""}.</i>`,
   ].filter(Boolean).join("\n");
 
-  return (await sendCard(chatId, o.imageUrl, caption)) ? "sent" : "failed";
+  // Forward-ready card — no buyer details.
+  const channelCaption = [
+    "🖼 <b>An original just found a buyer</b>",
+    `<b>${escapeHtml(o.artworkTitle)}</b> — by ${escapeHtml(o.artistName)}`,
+    `💎 ${escapeHtml(priceLine)}`,
+    `🔗 <a href="${escapeHtml(o.link)}">See the artist's studio</a>`,
+  ].join("\n");
+
+  const ownerOk = await sendCard(chatId, o.imageUrl, ownerCaption);
+  await sendCard(chatId, o.imageUrl, channelCaption);
+  return ownerOk ? "sent" : "failed";
 }
 
 /** Plain owner notification for escrow lifecycle events (deposit confirmed, etc.). */

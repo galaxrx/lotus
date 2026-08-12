@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { getI18n } from "@/i18n/server";
@@ -58,22 +59,27 @@ export default async function AteliersPage() {
               const title = locale === "fa" ? w.title_fa || w.title_en : w.title_en || w.title_fa;
               const price = priceOf(w);
               return (
-                <article key={w.id} className="group overflow-hidden rounded-2xl border border-border bg-surface shadow-soft transition-all hover:-translate-y-1 hover:shadow-lift">
+                <Link
+                  key={w.id}
+                  href={`/ateliers/${w.artist.handle}`}
+                  className="group block overflow-hidden rounded-2xl border border-border bg-surface shadow-soft transition-all hover:-translate-y-1 hover:shadow-lift"
+                >
                   <div className="overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={w.image_url} alt={title} loading="lazy" className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
                   </div>
                   <div className="p-4">
                     <h2 className="truncate font-serif text-lg">{title}</h2>
-                    <Link href={`/ateliers/${w.artist.handle}`} className="text-sm text-muted-foreground hover:text-foreground">
-                      {t.by} {w.artist.display_name}
-                    </Link>
+                    <p className="text-sm text-muted-foreground">{t.by} {w.artist.display_name}</p>
                     <div className="mt-2 flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">{w.style ? styleLabel(w.style, locale) : ""}</span>
                       {price && <span className="font-medium">{price}</span>}
                     </div>
+                    <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary">
+                      {t.viewProfile} <ArrowRight size={14} className="rtl:rotate-180 transition-transform group-hover:translate-x-0.5" />
+                    </span>
                   </div>
-                </article>
+                </Link>
               );
             })}
           </div>

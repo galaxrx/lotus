@@ -87,12 +87,14 @@ export function OrderForm({
       const data = await res.json();
       if (!res.ok) {
         setError(data?.error ?? o.error);
+        setLoading(false);
       } else {
+        // Keep the spinner running through navigation so the buyer never sees an
+        // idle form; the modal unmounts once the confirmation page renders.
         router.push(`/orders/${data.ref}`);
       }
     } catch {
       setError(o.error);
-    } finally {
       setLoading(false);
     }
   }
