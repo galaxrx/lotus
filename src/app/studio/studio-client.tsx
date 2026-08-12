@@ -2,12 +2,13 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { User, SupabaseClient } from "@supabase/supabase-js";
-import { Loader2, LogOut, Plus, Trash2, ImageUp, Check } from "lucide-react";
+import { Loader2, LogOut, Plus, Trash2, ImageUp, Check, Camera, X } from "lucide-react";
 import { useI18n } from "@/i18n/provider";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { ARTWORKS_BUCKET } from "@/lib/supabase/config";
-import { normalizeHandle, type ArtistProfile, type Artwork } from "@/lib/portal";
+import { deriveHandle, type ArtistProfile, type Artwork } from "@/lib/portal";
+import { styleLabel } from "@/lib/style-labels";
 import { STYLES } from "@/lib/catalog";
 
 type DB = SupabaseClient;
@@ -163,7 +164,7 @@ function Dashboard({ supabase, user, onSignOut }: { supabase: DB; user: User; on
 /* --------------------------------------------------------------- Profile ---- */
 
 function ProfileForm({ supabase, user, profile, onSaved }: { supabase: DB; user: User; profile: ArtistProfile | null; onSaved: () => void }) {
-  const { dict } = useI18n();
+  const { dict, locale } = useI18n();
   const p = dict.portal;
   const [form, setForm] = useState<ArtistProfile>(
     profile ?? {
@@ -175,6 +176,7 @@ function ProfileForm({ supabase, user, profile, onSaved }: { supabase: DB; user:
       city: "",
       instagram: "",
       website: "",
+      styles: [],
       price_min_toman: null,
       price_min_usd: null,
       avatar_url: null,
@@ -186,13 +188,27 @@ function ProfileForm({ supabase, user, profile, onSaved }: { supabase: DB; user:
   const [error, setError] = useState<string | null>(null);
   const set = <K extends keyof ArtistProfile>(k: K, v: ArtistProfile[K]) => setForm((f) => ({ ...f, [k]: v }));
 
+  const toggleStyle = (s: string) =>
+    setForm((f) => ({
+      ...f,
+      styles: f.styles.includes(s) ? f.styles.filter((x) => x !== s) : [...f.styles, s],
+    }));
+
   async function save(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
     setError(null);
     setDone(false);
-    const payload = { ...form, id: user.id, handle: normalizeHandle(form.handle || form.display_name) };
-    const { error } = await supabase.from("artist_profiles").upsert(payload);
+    // The handle is the studio's URL slug. Keep an existing one stable; otherwise
+    // derive it from the name (Persian-safe) so the artist never has to think about it.
+    const handle = profile?.handle || deriveHandle(form.display_name, user.id);
+    const payload = { ...form, id: user.id, handle };
+    let { error } = await supabase.from("artist_profiles").upsert(payload);
+    // On the rare handle collision with another studio, add a short unique suffix.
+    if (error && (error.code === "23505" || /handle/i.test(error.message))) {
+      const alt = `${handle}-${user.id.replace(/-/g, "").slice(0, 4)}`;
+      ({ error } = await supabase.from("artist_profiles").upsert({ ...payload, handle: alt }));
+    }
     if (error) setError(error.message);
     else {
       setDone(true);
@@ -203,29 +219,167 @@ function ProfileForm({ supabase, user, profile, onSaved }: { supabase: DB; user:
   }
 
   return (
-    <form onSubmit={save} className="max-w-2xl space-y-5">
-      <div className="grid gap-4 sm:grid-cols-2">
-        <TextField label={p.displayName} value={form.display_name} onChange={(v) => set("display_name", v)} required />
-        <TextField label={p.handle} value={form.handle} onChange={(v) => set("handle", v)} hint={p.handleHint} required />
+    <form onSubmit={save} className="max-w-2xl space-y-8">
+      {/* Identity: photo + name side by side */}
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+        <AvatarUpload
+          supabase={supabase}
+          user={user}
+          url={form.avatar_url}
+          onChange={(url) => set("avatar_url", url)}
+          onError={setError}
+          p={p}
+        />
+        <div className="flex-1 space-y-4">
+          <TextField label={p.displayName} value={form.display_name} onChange={(v) => set("display_name", v)} required />
+          <TextField label={p.city} value={form.city} onChange={(v) => set("city", v)} />
+        </div>
       </div>
-      <TextArea label={p.bioEn} value={form.bio_en} onChange={(v) => set("bio_en", v)} hint={p.bioHint} dir="ltr" />
-      <TextArea label={p.bioFa} value={form.bio_fa} onChange={(v) => set("bio_fa", v)} dir="rtl" />
-      <div className="grid gap-4 sm:grid-cols-3">
-        <TextField label={p.city} value={form.city} onChange={(v) => set("city", v)} />
-        <TextField label={p.instagram} value={form.instagram} onChange={(v) => set("instagram", v)} />
-        <TextField label={p.website} value={form.website} onChange={(v) => set("website", v)} />
+
+      <FormSection title={p.bioSection} hint={p.bioHint}>
+        <TextArea label={p.bioEn} value={form.bio_en} onChange={(v) => set("bio_en", v)} dir="ltr" />
+        <TextArea label={p.bioFa} value={form.bio_fa} onChange={(v) => set("bio_fa", v)} dir="rtl" />
+      </FormSection>
+
+      <FormSection title={p.stylesLabel} hint={p.stylesHint}>
+        <div className="flex flex-wrap gap-2">
+          {STYLES.map((s) => {
+            const on = form.styles.includes(s);
+            return (
+              <button
+                key={s}
+                type="button"
+                aria-pressed={on}
+                onClick={() => toggleStyle(s)}
+                className={`rounded-full border px-4 py-2 text-sm transition-colors cursor-pointer ${
+                  on
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-surface text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                }`}
+              >
+                {styleLabel(s, locale)}
+              </button>
+            );
+          })}
+        </div>
+      </FormSection>
+
+      <FormSection title={p.linksSection}>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <TextField label={p.instagram} value={form.instagram} onChange={(v) => set("instagram", v)} dir="ltr" />
+          <TextField label={p.website} value={form.website} onChange={(v) => set("website", v)} dir="ltr" />
+        </div>
+      </FormSection>
+
+      <FormSection title={p.pricingSection} hint={p.priceHint}>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <NumberField label={p.priceMinToman} value={form.price_min_toman} onChange={(v) => set("price_min_toman", v)} />
+          <NumberField label={p.priceMinUsd} value={form.price_min_usd} onChange={(v) => set("price_min_usd", v)} />
+        </div>
+      </FormSection>
+
+      <div className="flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6">
+        <Toggle label={p.publishProfile} checked={form.published} onChange={(v) => set("published", v)} />
+        <Button type="submit" size="lg" disabled={saving}>
+          {saving ? <Loader2 size={16} className="animate-spin" /> : done ? <Check size={16} /> : null}
+          {saving ? p.saving : done ? p.saved : p.save}
+        </Button>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <NumberField label={p.priceMinToman} value={form.price_min_toman} onChange={(v) => set("price_min_toman", v)} hint={p.priceHint} />
-        <NumberField label={p.priceMinUsd} value={form.price_min_usd} onChange={(v) => set("price_min_usd", v)} />
-      </div>
-      <Toggle label={p.publishProfile} checked={form.published} onChange={(v) => set("published", v)} />
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-      <Button type="submit" disabled={saving}>
-        {saving ? <Loader2 size={16} className="animate-spin" /> : done ? <Check size={16} /> : null}
-        {saving ? p.saving : done ? p.saved : p.save}
-      </Button>
     </form>
+  );
+}
+
+/** Circular profile-photo picker. Uploads into the artist's own folder in the bucket. */
+function AvatarUpload({
+  supabase,
+  user,
+  url,
+  onChange,
+  onError,
+  p,
+}: {
+  supabase: DB;
+  user: User;
+  url: string | null;
+  onChange: (url: string | null) => void;
+  onError: (msg: string | null) => void;
+  p: ReturnType<typeof useI18n>["dict"]["portal"];
+}) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function pick(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setBusy(true);
+    onError(null);
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `${user.id}/avatar-${Date.now()}.${ext}`;
+      const up = await supabase.storage.from(ARTWORKS_BUCKET).upload(path, file, { upsert: true });
+      if (up.error) throw up.error;
+      const { data } = supabase.storage.from(ARTWORKS_BUCKET).getPublicUrl(path);
+      onChange(data.publicUrl);
+    } catch (err) {
+      onError(err instanceof Error ? err.message : p.error);
+    } finally {
+      setBusy(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <div className="relative">
+        <div className="grid h-28 w-28 place-items-center overflow-hidden rounded-full border border-border bg-surface">
+          {url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={url} alt="" className="h-full w-full object-cover" />
+          ) : (
+            <Camera className="text-muted-foreground" size={28} />
+          )}
+          {busy && (
+            <div className="absolute inset-0 grid place-items-center rounded-full bg-background/60">
+              <Loader2 className="animate-spin text-primary" />
+            </div>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          aria-label={url ? p.changeAvatar : p.uploadAvatar}
+          className="absolute -bottom-1 -end-1 grid h-9 w-9 place-items-center rounded-full border border-border bg-background text-foreground shadow-soft transition-colors hover:bg-muted cursor-pointer"
+        >
+          <Camera size={16} />
+        </button>
+      </div>
+      {url ? (
+        <button
+          type="button"
+          onClick={() => onChange(null)}
+          className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-destructive cursor-pointer"
+        >
+          <X size={12} /> {p.removeAvatar}
+        </button>
+      ) : (
+        <span className="text-xs text-muted-foreground">{p.avatarHint}</span>
+      )}
+      <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={pick} />
+    </div>
+  );
+}
+
+/** A titled group of fields with an optional helper line. */
+function FormSection({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
+  return (
+    <section className="space-y-4">
+      <div>
+        <h2 className="font-serif text-lg">{title}</h2>
+        {hint && <p className="mt-1 text-sm text-muted-foreground">{hint}</p>}
+      </div>
+      {children}
+    </section>
   );
 }
 

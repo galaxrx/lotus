@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 import { supabaseConfigured } from "@/lib/supabase/config";
 import { formatMoney } from "@/lib/config";
 import { ArtworkBuy } from "@/components/ateliers/artwork-buy";
+import { styleLabel } from "@/lib/style-labels";
 import type { Artwork, ArtistProfile } from "@/lib/portal";
 
 export const dynamic = "force-dynamic";
@@ -48,20 +49,41 @@ export default async function AtelierProfilePage({ params }: { params: Promise<{
         </Link>
 
         <header className="border-b border-border pb-8">
-          <h1 className="text-balance text-4xl md:text-5xl">{artist.display_name}</h1>
-          <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-            {artist.city && <span className="inline-flex items-center gap-1"><MapPin size={14} /> {artist.city}</span>}
-            {artist.instagram && (
-              <a href={`https://instagram.com/${artist.instagram.replace(/^@/, "")}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-foreground">
-                <Instagram size={14} /> {artist.instagram}
-              </a>
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+            {artist.avatar_url && (
+              <div className="h-24 w-24 shrink-0 overflow-hidden rounded-full border border-border bg-surface shadow-soft">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={artist.avatar_url} alt={artist.display_name} className="h-full w-full object-cover" />
+              </div>
             )}
-            {artist.website && (
-              <a href={artist.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-foreground">
-                <Globe size={14} /> {dict.portal.website}
-              </a>
-            )}
+            <div>
+              <h1 className="text-balance text-4xl md:text-5xl">{artist.display_name}</h1>
+              <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                {artist.city && <span className="inline-flex items-center gap-1"><MapPin size={14} /> {artist.city}</span>}
+                {artist.instagram && (
+                  <a href={`https://instagram.com/${artist.instagram.replace(/^@/, "")}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-foreground">
+                    <Instagram size={14} /> {artist.instagram}
+                  </a>
+                )}
+                {artist.website && (
+                  <a href={artist.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-foreground">
+                    <Globe size={14} /> {dict.portal.website}
+                  </a>
+                )}
+              </div>
+            </div>
           </div>
+
+          {artist.styles?.length > 0 && (
+            <div className="mt-5 flex flex-wrap gap-2">
+              {artist.styles.map((s) => (
+                <span key={s} className="rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted-foreground">
+                  {styleLabel(s, locale)}
+                </span>
+              ))}
+            </div>
+          )}
+
           {bio && <p className="mt-6 max-w-2xl text-pretty leading-relaxed text-muted-foreground">{bio}</p>}
         </header>
 
@@ -82,7 +104,7 @@ export default async function AtelierProfilePage({ params }: { params: Promise<{
                   <div className="flex flex-1 flex-col p-4">
                     <h2 className="truncate font-serif text-lg">{title}</h2>
                     <p className="text-xs text-muted-foreground">
-                      {[w.style.replace(/-/g, " "), w.medium, w.dimensions, w.year || ""].filter(Boolean).join(" · ")}
+                      {[w.style ? styleLabel(w.style, locale) : "", w.medium, w.dimensions, w.year || ""].filter(Boolean).join(" · ")}
                     </p>
                     {desc && <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">{desc}</p>}
                     <div className="mt-auto pt-3">

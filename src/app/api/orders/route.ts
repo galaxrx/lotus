@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { z } from "zod";
 import { isSameOrigin } from "@/lib/http";
 import { rateLimit, clientIpFrom } from "@/lib/rate-limit";
@@ -121,24 +121,28 @@ export async function POST(req: Request) {
     persisted = false;
   }
 
-  const delivery = await sendOfferToTelegram({
-    ref,
-    paintingId,
-    paintingTitle: painting.title,
-    artist: painting.artist,
-    size: sizeById(sizeId)!.id,
-    frame: frameById(frameId)!.id,
-    suggestedUsd,
-    suggestedToman,
-    offeredUsd,
-    offeredToman,
-    offeredCurrency,
-    customerName: name,
-    contact,
-    address,
-    note,
-    imageUrl,
-  });
+  // Deliver to Telegram after the response is sent, so the customer reaches the
+  // deposit page immediately instead of waiting on the Bot API round-trip.
+  after(() =>
+    sendOfferToTelegram({
+      ref,
+      paintingId,
+      paintingTitle: painting.title,
+      artist: painting.artist,
+      size: sizeById(sizeId)!.id,
+      frame: frameById(frameId)!.id,
+      suggestedUsd,
+      suggestedToman,
+      offeredUsd,
+      offeredToman,
+      offeredCurrency,
+      customerName: name,
+      contact,
+      address,
+      note,
+      imageUrl,
+    })
+  );
 
-  return NextResponse.json({ ref, offeredUsd, offeredToman, persisted, delivery });
+  return NextResponse.json({ ref, offeredUsd, offeredToman, persisted });
 }

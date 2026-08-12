@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { z } from "zod";
 import { isSameOrigin } from "@/lib/http";
 import { rateLimit, clientIpFrom } from "@/lib/rate-limit";
@@ -89,19 +89,23 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     persisted = false;
   }
 
-  const delivery = await sendPurchaseToTelegram({
-    ref,
-    artworkTitle: title,
-    artistName: artist.display_name,
-    priceUsd,
-    priceToman,
-    customerName: name,
-    contact,
-    address,
-    note,
-    imageUrl: art.image_url,
-    link: `${publicEnv.appUrl.replace(/\/$/, "")}/ateliers/${artist.handle}`,
-  });
+  // Notify the owner after responding, so the buyer lands on the deposit step
+  // immediately rather than waiting on the Telegram round-trip.
+  after(() =>
+    sendPurchaseToTelegram({
+      ref,
+      artworkTitle: title,
+      artistName: artist.display_name,
+      priceUsd,
+      priceToman,
+      customerName: name,
+      contact,
+      address,
+      note,
+      imageUrl: art.image_url,
+      link: `${publicEnv.appUrl.replace(/\/$/, "")}/ateliers/${artist.handle}`,
+    })
+  );
 
-  return NextResponse.json({ ref, persisted, delivery });
+  return NextResponse.json({ ref, persisted });
 }

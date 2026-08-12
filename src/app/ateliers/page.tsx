@@ -5,6 +5,7 @@ import { getI18n } from "@/i18n/server";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseConfigured } from "@/lib/supabase/config";
 import { formatMoney } from "@/lib/config";
+import { styleLabel } from "@/lib/style-labels";
 import type { Artwork } from "@/lib/portal";
 
 export const metadata = { title: "Ateliers — work by our painters" };
@@ -68,7 +69,7 @@ export default async function AteliersPage() {
                       {t.by} {w.artist.display_name}
                     </Link>
                     <div className="mt-2 flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">{w.style.replace(/-/g, " ")}</span>
+                      <span className="text-muted-foreground">{w.style ? styleLabel(w.style, locale) : ""}</span>
                       {price && <span className="font-medium">{price}</span>}
                     </div>
                   </div>

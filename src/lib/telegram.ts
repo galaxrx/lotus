@@ -103,21 +103,24 @@ export async function sendOfferToTelegram(o: OfferNotification): Promise<"sent" 
     o.note ? `Note: ${escapeHtml(o.note.slice(0, 300))}` : "",
     "",
     openLink,
-    `➡️ Forward the next card to the channel${channel ? ` ${escapeHtml(channel)}` : ""} — it has no client details.`,
   ].filter(Boolean).join("\n");
 
-  // Forward-ready card — no client details.
-  const channelCaption = [
-    "🖼 <b>Commission up for auction</b>",
-    piece,
-    spec,
-    `💎 <b>Commission:</b> ${escapeHtml(both(o.offeredUsd, o.offeredToman))}`,
-    `Ref ${escapeHtml(o.ref)} — reply to take it on.`,
-    openLink,
-  ].join("\n");
-
   const ownerOk = await sendCard(chatId, o.imageUrl, ownerCaption);
-  await sendCard(chatId, o.imageUrl, channelCaption); // best-effort
+
+  // Anonymized auction card — posted straight to the public channel when one is
+  // configured (and it isn't just the owner's own chat). Without a channel we send
+  // nothing extra, so the owner gets exactly one message per order, not two.
+  if (channel && channel !== chatId) {
+    const channelCaption = [
+      "🖼 <b>Commission up for auction</b>",
+      piece,
+      spec,
+      `💎 <b>Commission:</b> ${escapeHtml(both(o.offeredUsd, o.offeredToman))}`,
+      `Ref ${escapeHtml(o.ref)} — reply to take it on.`,
+      openLink,
+    ].join("\n");
+    await sendCard(channel, o.imageUrl, channelCaption); // best-effort
+  }
   return ownerOk ? "sent" : "failed";
 }
 

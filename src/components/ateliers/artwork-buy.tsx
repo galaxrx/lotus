@@ -32,6 +32,7 @@ export function ArtworkBuy({
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (loading) return; // guard against a double submit creating two orders
     setError(null);
     setLoading(true);
     try {

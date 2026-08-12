@@ -10,6 +10,7 @@ export interface ArtistProfile {
   city: string;
   instagram: string;
   website: string;
+  styles: string[];
   price_min_toman: number | null;
   price_min_usd: number | null;
   avatar_url: string | null;
@@ -43,4 +44,13 @@ export function normalizeHandle(raw: string): string {
     .replace(/[^a-z0-9-]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 30);
+}
+
+/**
+ * Auto-generate a URL handle for a studio. Artists never see or type this — it's
+ * derived from their name. A Persian-only name normalizes to an empty slug, so we
+ * fall back to a stable id-based one (`studio-ab12cd`) that still makes a valid URL.
+ */
+export function deriveHandle(displayName: string, id: string): string {
+  return normalizeHandle(displayName) || `studio-${id.replace(/-/g, "").slice(0, 6)}`;
 }
