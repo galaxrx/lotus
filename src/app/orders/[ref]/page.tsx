@@ -56,6 +56,7 @@ export default async function CommissionPage({ params }: { params: Promise<{ ref
               <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{o.ref}</p>
               <p className="mt-1 font-mono text-2xl font-semibold tracking-wide text-foreground">{ref}</p>
             </div>
+            <p className="mt-4 text-sm text-muted-foreground">{o.keepNote}</p>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <Link href="/" className={buttonClasses("secondary", "md")}>{o.backHome}</Link>
               <Link href="/discover" className={buttonClasses("primary", "md")}>{o.browse}</Link>
@@ -111,6 +112,7 @@ export default async function CommissionPage({ params }: { params: Promise<{ ref
             <p className="font-serif text-lg">{formatMoney(offered, currency)}</p>
           </div>
         </div>
+        <p className="mt-3 text-xs text-muted-foreground">{o.keepNote}</p>
 
         {/* Status */}
         <div className="mt-6 rounded-2xl border border-border bg-surface p-5">
