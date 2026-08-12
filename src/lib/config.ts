@@ -6,8 +6,8 @@
 //
 // The server is the ONLY source of truth for price — client values are ignored.
 //
-// Two currencies are carried: USD for the English audience and Iranian toman for
-// the Persian audience. The toman ladder is tuned so any real combination lands
+// Two currencies are carried: USD for the English audience and toman for the
+// Persian audience. The toman ladder is tuned so any real combination lands
 // between 3,000,000 and 20,000,000 toman:
 //   min  S + simple + no frame      = 3,000,000
 //   max  XL + intricate + wood frame = 13M + 5M + 2M = 20,000,000
@@ -61,7 +61,7 @@ export const FRAMES: FrameOption[] = [
 export const DEPOSIT_RATE = 0.3; // 30% of the accepted offer, up front
 export const COMMISSION_RATE = 0.1; // 10% to the owner at delivery
 
-// Indicative free-market conversion, editable. Iran's rate floats a lot, so this
+// Indicative conversion, editable. The rate floats a lot, so this
 // is only ever used to show an approximate second-currency figure alongside the
 // authoritative one the customer actually typed — never to compute a real charge.
 export const TOMAN_PER_USD = 700_000;

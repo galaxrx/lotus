@@ -7,10 +7,10 @@ reproduction with a roster of vetted artists, mediated by the app owner as escro
 
 ## 0. Constraints that shape every decision
 
-- **No international payment rails.** Iran is under sanctions; Stripe/PayPal/cards
-  cannot clear. All money moves **card-to-card / Sheba** inside Iran, confirmed
-  **manually** by the owner. The software never touches funds — it orchestrates
-  instructions, tracking codes, and state.
+- **No online payment processor.** The app assumes no Stripe/PayPal. All money moves
+  by **card-to-card / bank transfer (IBAN)**, confirmed **manually** by the owner.
+  The software never touches funds — it orchestrates instructions, tracking codes,
+  and state.
 - **Anonymity until money is down.** Customer and artist must not be able to reach
   each other until the deposit is confirmed. Contact fields are server-only and
   released exactly once, at `deposit_confirmed`.

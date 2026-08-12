@@ -221,6 +221,9 @@ const BADWORD = /(coin|münze|map\b|diagram|logo|icon|seal|stamp|banknote|chart|
 // Artists whose Wikimedia images are dominated by monochrome sketches/manga — the
 // colour filter would catch most, but this removes them cleanly at the source.
 const EXCLUDE_ARTIST = /(hokusai|katsushika)/i;
+
+// Nude subjects — kept out of the catalog by title.
+const NUDE = /(\bnude\b|\bnaked\b|femme nue|nue couch|femme couch|reclining nude|baigneu|\bbather\b|\bbathers\b|odalisque|origine du monde|origin of the world|the sleepers|le sommeil|woman with a parrot|bas blancs|white stockings|maja desnuda|nude maja|\bolympia\b|la toilette|the toilette|phryne|two nudes|woman in the waves)/i;
 const strHash = (s) => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
 
 function cleanTitle(t, fallbackFile) {
@@ -327,6 +330,7 @@ async function main() {
     const key = `${row.title}|${artist}`.toLowerCase();
     if (seenKeys.has(key)) return false;
     if (BADWORD.test(row.file || "") || BADWORD.test(row.title)) return false;
+    if (NUDE.test(row.title) || NUDE.test(row.file || "")) return false;
     seenFiles.add(fileKey);
     seenKeys.add(key);
     collected.push({ ...row, artist });
