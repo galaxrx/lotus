@@ -77,12 +77,12 @@ export interface MatchResult {
 }
 
 /**
- * Rank the catalog against the given answers. Returns up to `limit` paintings,
- * best first. With no answers it returns nothing (the caller shows the quiz);
- * when fewer than `limit` pieces score positively it pads with the next best so
- * the results grid still fills out.
+ * Rank the catalog against the given answers, best first. Returns every painting
+ * that matches at all (positive score) so the caller can show as many as it likes;
+ * pass `limit` to cap the count. With no answers it returns nothing (the caller
+ * shows the quiz instead).
  */
-export function matchPaintings(a: MatchAnswers, limit = 12): MatchResult[] {
+export function matchPaintings(a: MatchAnswers, limit?: number): MatchResult[] {
   const weights: Weights[] = [];
   if (a.furniture) weights.push(FURNITURE[a.furniture]);
   if (a.home) weights.push(HOME[a.home]);
@@ -90,10 +90,11 @@ export function matchPaintings(a: MatchAnswers, limit = 12): MatchResult[] {
   if (a.look && a.look !== "any") weights.push(LOOK[a.look]);
   if (weights.length === 0) return [];
 
-  const scored = PAINTINGS.map((p) => ({ painting: p, score: scoreOne(p, weights) }));
-  scored.sort((x, y) => y.score - x.score || x.painting.id - y.painting.id);
-  const positive = scored.filter((s) => s.score > 0);
-  return (positive.length >= limit ? positive : scored).slice(0, limit);
+  const positive = PAINTINGS.map((p) => ({ painting: p, score: scoreOne(p, weights) }))
+    .filter((s) => s.score > 0)
+    .sort((x, y) => y.score - x.score || x.painting.id - y.painting.id);
+
+  return typeof limit === "number" ? positive.slice(0, limit) : positive;
 }
 
 export const FURNITURE_OPTIONS: FurnitureColor[] = ["warm-wood", "cool-grey", "bright-white", "bold-colour", "dark-moody"];

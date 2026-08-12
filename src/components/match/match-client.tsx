@@ -81,7 +81,7 @@ export function MatchClient() {
   );
 
   const atResults = stepIndex >= steps.length;
-  const results = useMemo(() => (atResults ? matchPaintings(answers, 12) : []), [atResults, answers]);
+  const results = useMemo(() => (atResults ? matchPaintings(answers) : []), [atResults, answers]);
 
   function choose(key: StepKey, value: string) {
     setAnswers((a) => ({ ...a, [key]: value }) as MatchAnswers);
@@ -99,6 +99,7 @@ export function MatchClient() {
   if (atResults) {
     return (
       <Results
+        key={JSON.stringify(answers)}
         results={results}
         answers={answers}
         m={m}
@@ -227,6 +228,10 @@ function Results({
   onAdjust: () => void;
   onRestart: () => void;
 }) {
+  const STEP = 24;
+  const [visible, setVisible] = useState(STEP);
+  const shown = results.slice(0, visible);
+
   // Chips summarising what the visitor picked.
   const picks = [
     answers.furniture && m.furniture[answers.furniture],
@@ -241,6 +246,11 @@ function Results({
         <p className="eyebrow">{m.eyebrow}</p>
         <h1 className="mt-4 text-balance text-4xl leading-tight md:text-5xl">{m.results.title}</h1>
         <p className="mx-auto mt-4 max-w-xl text-pretty text-muted-foreground">{m.results.lead}</p>
+        {results.length > 0 && (
+          <p className="mt-3 text-sm font-medium text-muted-foreground">
+            {results.length} {m.results.count}
+          </p>
+        )}
 
         {picks.length > 0 && (
           <div className="mt-6 flex flex-wrap justify-center gap-2">
@@ -273,8 +283,9 @@ function Results({
       {results.length === 0 ? (
         <p className="mt-16 text-center text-muted-foreground">{m.results.none}</p>
       ) : (
+        <>
         <div className="mx-auto mt-12 grid max-w-6xl grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {results.map(({ painting: p }) => (
+          {shown.map(({ painting: p }) => (
             <Link
               key={p.id}
               href={`/art/${p.id}`}
@@ -298,6 +309,18 @@ function Results({
             </Link>
           ))}
         </div>
+        {visible < results.length && (
+          <div className="mt-10 text-center">
+            <button
+              type="button"
+              onClick={() => setVisible((v) => v + STEP)}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border px-6 py-2.5 text-sm font-medium transition-colors hover:bg-muted cursor-pointer"
+            >
+              {m.results.showMore}
+            </button>
+          </div>
+        )}
+        </>
       )}
     </div>
   );
