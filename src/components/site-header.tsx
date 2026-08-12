@@ -44,6 +44,7 @@ export function SiteHeader() {
     { href: "/gallery", label: dict.nav.gallery },
     { href: "/match", label: dict.nav.match },
     { href: "/ateliers", label: dict.nav.ateliers },
+    { href: "/track", label: dict.nav.track },
     { href: "/styles", label: dict.nav.styles },
     { href: "/about", label: dict.nav.about },
     { href: "/studio", label: dict.nav.portal },
