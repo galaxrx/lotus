@@ -33,10 +33,10 @@ export interface ComplexityTier {
 }
 
 export const SIZE_TIERS: SizeTier[] = [
-  { id: "S", priceUsd: 120, priceToman: 3_000_000 },
-  { id: "M", priceUsd: 200, priceToman: 6_000_000 },
-  { id: "L", priceUsd: 320, priceToman: 9_000_000 },
-  { id: "XL", priceUsd: 480, priceToman: 13_000_000 },
+  { id: "S", priceUsd: 180, priceToman: 10_000_000 },
+  { id: "M", priceUsd: 270, priceToman: 15_000_000 },
+  { id: "L", priceUsd: 450, priceToman: 25_000_000 },
+  { id: "XL", priceUsd: 720, priceToman: 40_000_000 },
 ];
 
 // Surcharge for how demanding the artwork is to hand-paint.
@@ -64,7 +64,7 @@ export const COMMISSION_RATE = 0.1; // 10% to the owner at delivery
 // Indicative conversion, editable. The rate floats a lot, so this
 // is only ever used to show an approximate second-currency figure alongside the
 // authoritative one the customer actually typed — never to compute a real charge.
-export const TOMAN_PER_USD = 700_000;
+export const TOMAN_PER_USD = 55_000;
 
 export const usdToToman = (usd: number) => Math.round((usd * TOMAN_PER_USD) / 100_000) * 100_000;
 export const tomanToUsd = (toman: number) => Math.round(toman / TOMAN_PER_USD);

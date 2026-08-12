@@ -123,6 +123,7 @@ export async function POST(req: Request) {
 
   const delivery = await sendOfferToTelegram({
     ref,
+    paintingId,
     paintingTitle: painting.title,
     artist: painting.artist,
     size: sizeById(sizeId)!.id,

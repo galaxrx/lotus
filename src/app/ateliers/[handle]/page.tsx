@@ -7,6 +7,7 @@ import { getI18n } from "@/i18n/server";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseConfigured } from "@/lib/supabase/config";
 import { formatMoney } from "@/lib/config";
+import { ArtworkBuy } from "@/components/ateliers/artwork-buy";
 import type { Artwork, ArtistProfile } from "@/lib/portal";
 
 export const dynamic = "force-dynamic";
@@ -71,19 +72,25 @@ export default async function AtelierProfilePage({ params }: { params: Promise<{
             {works.map((w) => {
               const title = locale === "fa" ? w.title_fa || w.title_en : w.title_en || w.title_fa;
               const amt = currency === "toman" ? w.price_toman : w.price_usd;
+              const buyable = w.for_sale && amt != null;
               const price = !w.for_sale ? null : amt ? formatMoney(amt, currency) : t.priceOnRequest;
               const desc = locale === "fa" ? w.description_fa || w.description_en : w.description_en || w.description_fa;
               return (
-                <article key={w.id} className="overflow-hidden rounded-2xl border border-border bg-surface shadow-soft">
+                <article key={w.id} className="flex flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-soft">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={w.image_url} alt={title} loading="lazy" className="aspect-[4/5] w-full object-cover" />
-                  <div className="p-4">
+                  <div className="flex flex-1 flex-col p-4">
                     <h2 className="truncate font-serif text-lg">{title}</h2>
                     <p className="text-xs text-muted-foreground">
                       {[w.style.replace(/-/g, " "), w.medium, w.dimensions, w.year || ""].filter(Boolean).join(" · ")}
                     </p>
                     {desc && <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">{desc}</p>}
-                    {price && <p className="mt-3 font-medium">{price}</p>}
+                    <div className="mt-auto pt-3">
+                      {price && <p className="font-medium">{price}</p>}
+                      {buyable && (
+                        <ArtworkBuy artworkId={w.id} title={title} imageUrl={w.image_url} priceLabel={formatMoney(amt!, currency)} />
+                      )}
+                    </div>
                   </div>
                 </article>
               );

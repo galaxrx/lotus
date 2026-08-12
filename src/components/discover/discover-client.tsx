@@ -4,8 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useI18n } from "@/i18n/provider";
 import { PAINTINGS, imageOf } from "@/data/paintings";
-import { CATEGORIES, TONES, filterPaintings, suggestedSizeForBudget } from "@/lib/catalog";
-import { BUDGET_MAX } from "@/lib/config";
+import { CATEGORIES, TONES, filterPaintings } from "@/lib/catalog";
 import type { Category, Tone } from "@/data/paintings";
 import { cn } from "@/lib/utils";
 
@@ -15,20 +14,13 @@ export function DiscoverClient() {
 
   const [category, setCategory] = useState<Category | null>(null);
   const [tone, setTone] = useState<Tone | null>(null);
-  const [budgetIndex, setBudgetIndex] = useState<number | null>(null);
 
-  const results = useMemo(
-    () => filterPaintings({ category, tone }),
-    [category, tone]
-  );
+  const results = useMemo(() => filterPaintings({ category, tone }), [category, tone]);
 
-  const suggestedSize =
-    budgetIndex != null ? suggestedSizeForBudget(BUDGET_MAX[budgetIndex]) : null;
-
-  const hasFilters = category || tone || budgetIndex != null;
+  const hasFilters = category || tone;
 
   function href(id: number) {
-    return suggestedSize ? `/art/${id}?size=${suggestedSize}` : `/art/${id}`;
+    return `/art/${id}`;
   }
 
   return (
@@ -63,17 +55,6 @@ export function DiscoverClient() {
           ))}
         </FilterRow>
 
-        <FilterRow label={d.budget}>
-          <Chip active={budgetIndex == null} onClick={() => setBudgetIndex(null)}>
-            {d.any}
-          </Chip>
-          {d.budgets.map((b, i) => (
-            <Chip key={b} active={budgetIndex === i} onClick={() => setBudgetIndex(i)}>
-              {b}
-            </Chip>
-          ))}
-        </FilterRow>
-
         <div className="flex items-center justify-between pt-1">
           <p className="text-sm text-muted-foreground">
             {results.length} {d.results}
@@ -83,7 +64,6 @@ export function DiscoverClient() {
               onClick={() => {
                 setCategory(null);
                 setTone(null);
-                setBudgetIndex(null);
               }}
               className="text-sm text-primary link-underline cursor-pointer"
             >
