@@ -44,11 +44,12 @@ paintings, previews one on their wall (camera AR), and submits a **guest** order
 - Icons: `lucide-react` only. UI primitives follow shadcn (`src/components/ui`, `components.json`).
 - Use logical CSS (`start`/`end`, `ms`/`me`, `rtl:` variants) so RTL works.
 
-## Product review gate (Galaxera Product Advisor)
+## Product Advisor (independent review gate)
 
-- Invoke the `galaxera-product-advisor` skill (Codex-powered) **before** implementing
-  any material user-facing feature or user-flow change, and **again after** implementation
-  when the change materially affects UI/UX.
+- Invoke the `product-advisor` skill (or `/product-advisor`, Codex-powered) **before**
+  implementing any material user-facing feature or user-flow change — for an independent
+  product, UX, UI, and accessibility review — and resolve its `MUST` items before building.
+  Invoke it **again after** implementation when the change materially affects UI/UX.
 - Skip it for trivial maintenance with no user-experience impact (refactors, formatting,
   dependency bumps, narrow bug fixes).
 - Codex's role is **advisory and read-only** — it never edits the repo. User instructions
